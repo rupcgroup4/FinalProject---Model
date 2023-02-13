@@ -40,7 +40,7 @@ class Model():
         while not done:
             #Using Model predict nad not a random action
             action, _states = self.model.predict(obs) 
-            obs, reward, done, info = self.env.step(action.item()) #Take step based on model prediction
+            obs, reward, done, info = self.env.step(action) #Take step based on model prediction
             print(obs)
             score += reward
             steps +=1

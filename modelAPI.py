@@ -1,11 +1,13 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from observation import Observation
 from envs.model import Model
 from envs.SpyEnv_v3 import SpyEnv_v3
 from envs.AgentsEnv_v0  import AgentsEnv_v0
-from pydantic import BaseModel
+
+from envs.flights import flights
 
 class gameState(BaseModel):
   spy_position: str
@@ -29,7 +31,7 @@ app.add_middleware(
 async def whereToFlyAgents(item: gameState):
   print(item)
   obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
-  env = AgentsEnv_v0(4,4)
+  env = AgentsEnv_v0(flights)
   model = Model.Model(env, isNew=False)
   print(obs.state)
   res = model.predict(obs.state)[0]
@@ -43,12 +45,13 @@ async def whereToFlyAgents(item: gameState):
 async def whereToFlySPY(item: gameState):
   print(item)
   obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
-  env = SpyEnv_v3(4,4)
+  env = SpyEnv_v3(flights)
   model = Model.Model(env, isNew=False)
   print(obs.state)
   res = model.predict(obs.state)
+  res = res[0].item()
   res = obs.get_air_port_id_by_index(res)
-  return {'result':res[0]}
+  return {'result':res}
   # return {'result':1}
 
 
