@@ -1,0 +1,373 @@
+{
+  "AMS": {
+    "name": "Schiphol",
+    "latitude": "52.308613",
+    "longitude": "4.763889",
+    "destinations": [
+      "LHR",
+      "PHL",
+      "AUH",
+      "CDG",
+      "LIS",
+      "LBA",
+      "IAH",
+      "NAP",
+      "VRN",
+      "KBP",
+      "OTP"
+    ]
+  },
+  "LIS": {
+    "name": "Lisboa",
+    "latitude": "38.781311",
+    "longitude": "-9.135919",
+    "destinations": ["LHR", "PHL", "CDG", "AMS", "KBP", "OTP"]
+  },
+  "NAP": {
+    "name": "Capodichino",
+    "latitude": "40.886033",
+    "longitude": "14.290781",
+    "destinations": ["CDG", "AMS", "KBP", "VRN", "OTP"]
+  },
+  "LHR": {
+    "name": "Heathrow",
+    "latitude": "51.4775",
+    "longitude": "-0.461389",
+    "destinations": [
+      "AMS",
+      "AUH",
+      "CDG",
+      "IAH",
+      "LBA",
+      "LIS",
+      "OTP",
+      "PHL",
+      "KBP",
+      "ISB"
+    ]
+  },
+  "CDG": {
+    "name": "Charles De Gaulle",
+    "latitude": "49.012779",
+    "longitude": "2.55",
+    "destinations": [
+      "LHR",
+      "PHL",
+      "AMS",
+      "AUH",
+      "IAH",
+      "KBP",
+      "LIS",
+      "NAP",
+      "OTP",
+      "VRN",
+      "LBA",
+      "ISB"
+    ]
+  },
+  "LBA": {
+    "name": "Leeds Bradford",
+    "latitude": "53.865897",
+    "longitude": "-1.660569",
+    "destinations": ["LHR", "AMS", "CDG", "ISB", "ABZ"]
+  },
+  "KBP": {
+    "name": "Boryspil Intl",
+    "latitude": "50.345",
+    "longitude": "30.894722",
+    "destinations": ["CDG", "LHR", "NAP", "AMS", "LIS"]
+  },
+  "IAH": {
+    "name": "George Bush Intercontinental",
+    "latitude": "29.984433",
+    "longitude": "-95.341442",
+    "destinations": ["LHR", "PHL", "CDG", "AMS"]
+  },
+  "OTP": {
+    "name": "Henri Coanda",
+    "latitude": "44.572161",
+    "longitude": "26.102178",
+    "destinations": ["LHR", "CDG", "AMS", "LIS", "NAP", "VRN"]
+  },
+  "PHL": {
+    "name": "Philadelphia Intl",
+    "latitude": "39.871944",
+    "longitude": "-75.241139",
+    "destinations": ["AMS", "CDG", "IAH", "LHR", "LIS", "MIA", "MUC"]
+  },
+  "VRN": {
+    "name": "Villafranca",
+    "latitude": "45.395706",
+    "longitude": "10.888533",
+    "destinations": ["CDG", "AMS", "NAP", "OTP"]
+  },
+  "ISB": {
+    "name": "Chaklala",
+    "latitude": "33.616653",
+    "longitude": "73.099233",
+    "destinations": ["AUH", "CDG", "LBA", "LHR"]
+  },
+  "AUH": {
+    "name": "Abu Dhabi Intl",
+    "latitude": "24.432972",
+    "longitude": "54.651138",
+    "destinations": ["ISB", "LHR", "AMS", "CDG"]
+  },
+  "MUC": {
+    "name": "Franz Josef Strauss",
+    "latitude": "48.353783",
+    "longitude": "11.786086",
+    "destinations": [
+      "LHR",
+      "PHL",
+      "AUH",
+      "CAG",
+      "NAP",
+      "CDG",
+      "VRN",
+      "AMS",
+      "LUX",
+      "KBP",
+      "LIS",
+      "OTP",
+      "IAH"
+    ]
+  },
+  "ABZ": {
+    "name": "Dyce",
+    "latitude": "57.201944",
+    "longitude": "-2.197778",
+    "destinations": ["LHR", "CDG", "AMS", "LBA"]
+  },
+  "MIA": {
+    "name": "Miami Intl",
+    "latitude": "25.79325",
+    "longitude": "-80.290556",
+    "destinations": ["CDG", "IAH", "LHR", "PHL", "AMS", "LIS"]
+  },
+  "CAG": {
+    "name": "Elmas",
+    "latitude": "39.251469",
+    "longitude": "9.054283",
+    "destinations": ["MUC", "NAP", "VRN", "LUX"]
+  },
+  "LUX": {
+    "name": "Luxembourg",
+    "latitude": "49.626575",
+    "longitude": "6.211517",
+    "destinations": ["LHR", "CDG", "AMS", "CAG", "LIS", "MUC", "NAP", "LGW"]
+  },
+  "WAW": {
+    "name": "Okecie",
+    "latitude": "52.16575",
+    "longitude": "20.967122",
+    "destinations": ["LHR", "CDG", "AMS", "MUC", "KBP", "LIS", "OTP"]
+  },
+  "GIG": {
+    "name": "Galeao Antonio Carlos Jobim",
+    "latitude": "-22.808903",
+    "longitude": "-43.243647",
+    "destinations": ["MIA", "CDG", "LHR", "AMS", "LIS", "IAH"]
+  },
+  "CMN": {
+    "name": "Mohammed V Intl",
+    "latitude": "33.367467",
+    "longitude": "-7.589967",
+    "destinations": ["LGW", "CDG", "AMS", "AUH", "LHR", "LIS", "MUC"]
+  },
+  "LGW": {
+    "name": "Gatwick",
+    "latitude": "51.148056",
+    "longitude": "-0.190278",
+    "destinations": [
+      "CMN",
+      "AMS",
+      "NAP",
+      "VRN",
+      "KBP",
+      "LIS",
+      "ABZ",
+      "CDG",
+      "LUX",
+      "MUC",
+      "OTP"
+    ]
+  },
+  "BRI": {
+    "name": "Bari",
+    "latitude": "41.138856",
+    "longitude": "16.760594",
+    "destinations": [
+      "LIN",
+      "TRN",
+      "LGW",
+      "MUC",
+      "CAG",
+      "AMS",
+      "CDG",
+      "VRN",
+      "BUD",
+      "OTP"
+    ]
+  },
+  "LAX": {
+    "name": "Los Angeles Intl",
+    "latitude": "33.942536",
+    "longitude": "-118.408075",
+    "destinations": ["IAH", "LHR", "MIA", "PHL", "CDG", "MSP", "AMS", "MUC"]
+  },
+  "DEL": {
+    "name": "Indira Gandhi Intl",
+    "latitude": "28.5665",
+    "longitude": "77.103088",
+    "destinations": ["AUH", "LHR", "CDG", "MUC", "AMS"]
+  },
+  "TRN": {
+    "name": "Torino",
+    "latitude": "45.200761",
+    "longitude": "7.649631",
+    "destinations": ["CDG", "CMN", "BRI", "NAP", "LGW", "AMS", "CAG", "MUC"]
+  },
+  "MSP": {
+    "name": "Minneapolis St Paul Intl",
+    "latitude": "44.881956",
+    "longitude": "-93.221767",
+    "destinations": ["MIA", "PHL", "CDG", "LAX", "LHR", "AMS", "IAH"]
+  },
+  "AYT": {
+    "name": "Antalya",
+    "latitude": "36.898731",
+    "longitude": "30.800461",
+    "destinations": ["MUC", "AMS", "LUX", "LGW", "LBA"]
+  },
+  "LPL": {
+    "name": "Liverpool",
+    "latitude": "53.333611",
+    "longitude": "-2.849722",
+    "destinations": ["AMS", "CDG", "LIS", "NAP", "WAW"]
+  },
+  "LHE": {
+    "name": "Allama Iqbal Intl",
+    "latitude": "31.521564",
+    "longitude": "74.403594",
+    "destinations": ["AUH", "DEL", "ISB", "LHR"]
+  },
+  "AUS": {
+    "name": "Austin Bergstrom Intl",
+    "latitude": "30.194528",
+    "longitude": "-97.669889",
+    "destinations": ["LAX", "LHR", "PHL", "MSP", "IAH"]
+  },
+  "BUD": {
+    "name": "Ferihegy",
+    "latitude": "47.436933",
+    "longitude": "19.255592",
+    "destinations": [
+      "LHR",
+      "CDG",
+      "LGW",
+      "AMS",
+      "MUC",
+      "WAW",
+      "LBA",
+      "OTP",
+      "LIS",
+      "BRI",
+      "NAP"
+    ]
+  },
+  "TLS": {
+    "name": "Blagnac",
+    "latitude": "43.629075",
+    "longitude": "1.363819",
+    "destinations": ["CMN", "LHR", "AMS", "CDG", "MUC", "LIS", "LGW"]
+  },
+  "VNO": {
+    "name": "Vilnius Intl",
+    "latitude": "54.634133",
+    "longitude": "25.285767",
+    "destinations": ["LPL", "WAW", "CDG", "MUC", "KBP"]
+  },
+  "NCE": {
+    "name": "Cote D\\\\'Azur",
+    "latitude": "43.658411",
+    "longitude": "7.215872",
+    "destinations": [
+      "TLS",
+      "LHR",
+      "AMS",
+      "CDG",
+      "CMN",
+      "LGW",
+      "LUX",
+      "MUC",
+      "WAW",
+      "LBA",
+      "KBP",
+      "OTP",
+      "LIS",
+      "LPL",
+      "NAP"
+    ]
+  },
+  "RIC": {
+    "name": "Richmond Intl",
+    "latitude": "37.505167",
+    "longitude": "-77.319667",
+    "destinations": ["MIA", "PHL", "MSP", "IAH"]
+  },
+  "LIN": {
+    "name": "Linate",
+    "latitude": "45.445103",
+    "longitude": "9.276739",
+    "destinations": [
+      "LHR",
+      "CDG",
+      "AMS",
+      "BRI",
+      "NAP",
+      "CAG",
+      "OTP",
+      "WAW",
+      "LGW"
+    ]
+  },
+  "BFS": {
+    "name": "Belfast Intl",
+    "latitude": "54.6575",
+    "longitude": "-6.215833",
+    "destinations": ["AMS", "CDG", "LGW", "LPL", "NCE"]
+  },
+  "KEF": {
+    "name": "Keflavik International Airport",
+    "latitude": "63.985",
+    "longitude": "-22.605556",
+    "destinations": ["AMS", "CDG", "JFK", "LGW", "LHR", "MUC"]
+  },
+  "JFK": {
+    "name": "John F Kennedy Intl",
+    "latitude": "40.639751",
+    "longitude": "-73.778925",
+    "destinations": [
+      "AUH",
+      "AUS",
+      "CDG",
+      "GIG",
+      "LAX",
+      "LHR",
+      "MIA",
+      "NCE",
+      "DEL",
+      "CMN",
+      "AMS",
+      "MSP",
+      "PHL",
+      "RIC",
+      "KEF",
+      "MUC",
+      "WAW",
+      "LHE",
+      "KBP"
+    ]
+  }
+}
