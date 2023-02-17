@@ -15,16 +15,12 @@ TARGET_POSITION = 14
 
 class AgentsEnv_v0(Env):
 
-  def __init__(self, flights):
+  def __init__(self, flights, state):
 
     self.flights = flights
+    self.initial_state = state.copy()
 
-    self.state = dict({
-      "spyPosition": SPY_POSITION, 
-      "agent1Position": AGENT1_POSITION, 
-      "agent2Position": AGENT2_POSITION,
-      "targetPosition": TARGET_POSITION
-      })
+    self.state = state.copy()
 
     self.observation_space = Dict({
       "spyPosition": Discrete(len(flights)),
@@ -39,7 +35,7 @@ class AgentsEnv_v0(Env):
     self.lose = 0
     self.ilegal_step = 0
 
-    spy_env = SpyEnv_v2(flights)
+    spy_env = SpyEnv_v2(flights, state)
     self.spyModel = Model.Model(spy_env, isNew=False)
 
   

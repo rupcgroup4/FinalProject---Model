@@ -41,10 +41,16 @@ class Model():
             #Using Model predict nad not a random action
             action, _states = self.model.predict(obs) 
             obs, reward, done, info = self.env.step(action) #Take step based on model prediction
-            print(obs)
             score += reward
             steps +=1
     win, lose, ilegal_step = self.env.stats()
+    # if win > lose:
+    #   return {
+    #     'state':  self.env.initial_state,
+    #     'win': win,
+    #     'lose': lose,
+    #     'ilegal': ilegal_step
+    #   }
     print(f'win {win}, lose {lose}, steps {steps}, ilegal {ilegal_step}')
   
   def predict(self, obs):
