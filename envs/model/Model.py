@@ -44,14 +44,13 @@ class Model():
             score += reward
             steps +=1
     win, lose, ilegal_step = self.env.stats()
-    # if win > lose:
-    #   return {
-    #     'state':  self.env.initial_state,
-    #     'win': win,
-    #     'lose': lose,
-    #     'ilegal': ilegal_step
-    #   }
-    print(f'win {win}, lose {lose}, steps {steps}, ilegal {ilegal_step}')
+    return {
+      'state':  self.env.initial_state,
+      'win': win,
+      'lose': lose,
+      'ilegal': ilegal_step
+    }
+    # print(f'win {win}, lose {lose}, steps {steps}, ilegal {ilegal_step}')
   
   def predict(self, obs):
     return self.model.predict(obs)

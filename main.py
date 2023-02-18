@@ -4,29 +4,74 @@ from envs.SpyEnv_v3 import SpyEnv_v3
 from envs.AgentsEnv_v0 import AgentsEnv_v0
 from envs.flights import flights
 import itertools
+import collections
 
 state = {
   "spyPosition": 0, 
   "agent1Position": 1, 
   "agent2Position": 13,
-  "targetPosition": 24
+  "targetPosition": 4
 }
 
-spy_env = SpyEnv_v2(state, flights)
-spy_model = Model.Model(spy_env, isNew=False)
-spy_model.test_model(20)
-spy_model.learn(50000)
-spy_env.reset_stats()
-spy_model.test_model(20)
+order_for_train = []
+# BFS algorithm
+def bfs(root):
+
+  visited = set() 
+  queue = collections.deque([root])
+  visited.add(root)
+  while queue:
+      # Dequeue a vertex from queue
+      vertex = queue.popleft()
+      if(vertex != root):
+        order_for_train.append(vertex)
+      # If not visited, mark it as visited, and
+      # enqueue it
+      for neighbour in flights[vertex]['destinations']:
+          if neighbour not in visited:
+              visited.add(neighbour)
+              queue.append(neighbour)
 
 
-# path = spy_env.shortest_path(0, 2)
+bfs(0)
+
+first = False
+
+for i in order_for_train:
+  state['targetPosition'] = i
+  spy_env = SpyEnv_v2(state, flights)
+
+  if first:
+    first = False
+    spy_model = Model.Model(spy_env, isNew=True)
+  else:
+    spy_model = Model.Model(spy_env, isNew=False)
+  
+  spy_model.learn(20000)
+  spy_env.reset_stats()
+  res = spy_model.test_model(20)
+  if res:
+    f = open('learning_process.txt', 'a')
+    f.write(f"{res['state']}, {res['win']}, {res['lose']}, {res['ilegal']}\n") 
+    f.close()
+
+
+
+
+
+
+
+
+
+
+
+# path = spy_env.shortest_path(0, 14)
 # print(path)
 
 # duplicates = []
 # results = []
 # first = True
-# num_list = [x for x in range(len(flights)-1)]
+# num_list = [x for x in range(len(flights))]
 
 # all_combinations = list(itertools.permutations(num_list, 4))
 # for comb in all_combinations:
@@ -52,7 +97,6 @@ spy_model.test_model(20)
 #       else:
 #         spy_model = Model.Model(spy_env, isNew=False)
 #       spy_model.learn(20000)
-#       # model.evaluate_model(10000)
 #       spy_env.reset_stats()
 #       res = spy_model.test_model(20)
 #       if res:

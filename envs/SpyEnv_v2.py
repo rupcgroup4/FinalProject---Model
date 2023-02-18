@@ -8,16 +8,25 @@ class SpyEnv_v2(Env):
   def __init__(self, state, flights):
     
     self.flights = flights
+    
+
     self.initial_state = state.copy()
 
     self.state = state.copy()
-
+    
     self.observation_space = Dict({
       "spyPosition": Discrete(len(flights)),
       "agent1Position": Discrete(len(flights)),
       "agent2Position": Discrete(len(flights)),
-      "targetPosition": Discrete(len(flights))
+      "targetPosition": Discrete(len(flights)),
       })
+    
+    # for i in range(len(flights)):
+    #   self.state[str(i)] = flights[i]['destinations']
+    #   self.observation_space[str(i)] = Box(low=0, high=len(flights), shape=(len(flights[i]['destinations']),))
+    #   self.initial_state[str(i)] = flights[i]['destinations']
+
+    
 
     self.action_space = Discrete(len(flights))
 
@@ -35,7 +44,7 @@ class SpyEnv_v2(Env):
 
   #action = represent index of airpor in array
   def step(self, action):
-    reward = 0
+    reward = 1
     done = False
     info = {}
 
@@ -43,8 +52,8 @@ class SpyEnv_v2(Env):
     legal_flights = self.getPossibleFlightsFromCurrentPosition(self.state["spyPosition"])
     if(action not in legal_flights):
       self.ilegal_step +=1
-      reward = -50
-      return self.state, reward, True, info
+      reward = -1
+      return self.state, reward, done, info
 
     #Move spy
     self.state["spyPosition"] = action
@@ -56,7 +65,7 @@ class SpyEnv_v2(Env):
       done = True
     elif self.state['spyPosition'] == self.state['targetPosition']: 
       self.win +=1
-      reward = 50
+      reward = 100
       done = True
     #
     else:
