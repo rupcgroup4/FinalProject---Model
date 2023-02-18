@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from observation import Observation
 from envs.model import Model
-from envs.SpyEnv_v3 import SpyEnv_v3
+from envs.SpyEnv_v2 import SpyEnv_v2
 from envs.AgentsEnv_v0  import AgentsEnv_v0
 
 from envs.flights import flights
@@ -45,7 +45,8 @@ async def whereToFlyAgents(item: gameState):
 async def whereToFlySPY(item: gameState):
   print(item)
   obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
-  env = SpyEnv_v3(flights)
+  env = SpyEnv_v2(obs.state, flights)
+
   model = Model.Model(env, isNew=False)
   print(obs.state)
   res = model.predict(obs.state)

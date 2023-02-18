@@ -17,13 +17,27 @@ class Model():
     if isNew:
         self.model = PPO("MultiInputPolicy", env, verbose=1, tensorboard_log=self.log_path)
     else:
-        self.model = PPO.load(self.save_path, env=env)
+        self.model = PPO.load(self.save_path+'/best_model', env=env)
+
+    self.eval_call_back()
 
     
-    
+  def eval_call_back(self):
+     #Specify on after which average reward to stop the training
+    stop_callback = StopTrainingOnRewardThreshold(reward_threshold=100, verbose=1)
+    #Callback that going to get triggered after each training round
+    self.eval_callback = EvalCallback(self.env,
+                                #call the callback on each new best score
+                                callback_on_new_best=stop_callback,
+                                #call the callback each 10000 rounds
+                                eval_freq=5000,
+                                #save the best model as file
+                                best_model_save_path=self.save_path,
+                                verbose=1)
+
   def learn(self, total_timesteps=1000):
-    self.model.learn(total_timesteps=total_timesteps)
-    self.model.save(self.save_path)
+    self.model.learn(total_timesteps=total_timesteps, callback=self.eval_callback)
+    # self.model.save(self.save_path)
 
 
   def evaluate_model(self, episodes=10):

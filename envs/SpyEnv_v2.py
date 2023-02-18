@@ -39,12 +39,14 @@ class SpyEnv_v2(Env):
     self.win = 0
     self.lose = 0
     self.ilegal_step = 0
+    self.episode_steps = 0
 
   
 
   #action = represent index of airpor in array
   def step(self, action):
-    reward = 1
+    self.episode_steps+=1
+    reward = 0
     done = False
     info = {}
 
@@ -52,8 +54,8 @@ class SpyEnv_v2(Env):
     legal_flights = self.getPossibleFlightsFromCurrentPosition(self.state["spyPosition"])
     if(action not in legal_flights):
       self.ilegal_step +=1
-      reward = -1
-      return self.state, reward, done, info
+      reward = -50
+      return self.state, reward, True, info
 
     #Move spy
     self.state["spyPosition"] = action
@@ -66,6 +68,9 @@ class SpyEnv_v2(Env):
     elif self.state['spyPosition'] == self.state['targetPosition']: 
       self.win +=1
       reward = 100
+      shortest_path_legth = len(self.shortest_path(self.initial_state['spyPosition'], self.state['targetPosition'])) - 1
+      if(shortest_path_legth == self.episode_steps):
+        reward = 150
       done = True
     #
     else:
@@ -159,6 +164,7 @@ class SpyEnv_v2(Env):
   
   def reset(self):
     self.state = self.initial_state.copy()
+    self.episode_steps = 0
     return self.state
 
   def stats(self):
@@ -168,4 +174,5 @@ class SpyEnv_v2(Env):
     self.win = 0
     self.lose = 0
     self.ilegal_step = 0
+    
 

@@ -10,8 +10,9 @@ state = {
   "spyPosition": 0, 
   "agent1Position": 1, 
   "agent2Position": 13,
-  "targetPosition": 4
+  "targetPosition": 11
 }
+
 
 order_for_train = []
 # BFS algorithm
@@ -21,50 +22,61 @@ def bfs(root):
   queue = collections.deque([root])
   visited.add(root)
   while queue:
-      # Dequeue a vertex from queue
-      vertex = queue.popleft()
-      if(vertex != root):
-        order_for_train.append(vertex)
-      # If not visited, mark it as visited, and
-      # enqueue it
-      for neighbour in flights[vertex]['destinations']:
-          if neighbour not in visited:
-              visited.add(neighbour)
-              queue.append(neighbour)
-
+    # Dequeue a vertex from queue
+    vertex = queue.popleft()
+    if(vertex != root):
+      order_for_train.append(vertex)
+    # If not visited, mark it as visited, and
+    # enqueue it
+    for neighbour in flights[vertex]['destinations']:
+      if neighbour not in visited:
+        visited.add(neighbour)
+        queue.append(neighbour)
 
 bfs(0)
 
 first = False
+counter = 0
+while counter < 6:
+  for i in order_for_train:
+    state['targetPosition'] = i
+    if(len(set(state.values())) < 4):
+      continue
+    
+    spy_env = SpyEnv_v2(state, flights)
 
-for i in order_for_train:
-  state['targetPosition'] = i
-  spy_env = SpyEnv_v2(state, flights)
-
-  if first:
-    first = False
-    spy_model = Model.Model(spy_env, isNew=True)
-  else:
-    spy_model = Model.Model(spy_env, isNew=False)
-  
-  spy_model.learn(20000)
-  spy_env.reset_stats()
-  res = spy_model.test_model(20)
-  if res:
-    f = open('learning_process.txt', 'a')
-    f.write(f"{res['state']}, {res['win']}, {res['lose']}, {res['ilegal']}\n") 
-    f.close()
-
-
-
-
-
-
+    if first:
+      first = False
+      spy_model = Model.Model(spy_env, isNew=True)
+    else:
+      spy_model = Model.Model(spy_env, isNew=False)
+    
+    distance = spy_env.shortest_path(state['spyPosition'], state['targetPosition'])
+    distance = len(distance) - 1
+    
+    spy_model.learn(30000 * distance)
+    spy_env.reset_stats()
+    res = spy_model.test_model(20)
+    if res:
+      f = open('learning_process.txt', 'a')
+      f.write(f"{res['state']}, {res['win']}, {res['lose']}, {res['ilegal']}\n") 
+      f.close()
+   
+  counter+=1
+  f = open('learning_process.txt', 'a')
+  f.write(f"************* learning {counter}*************\n")
+  f.close()
 
 
 
 
 
+
+
+
+
+
+# spy_env = SpyEnv_v2(state, flights)
 # path = spy_env.shortest_path(0, 14)
 # print(path)
 
