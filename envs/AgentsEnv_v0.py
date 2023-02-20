@@ -7,36 +7,31 @@ from stable_baselines3 import PPO
 
 
 
-SPY_POSITION = 32
-AGENT1_POSITION = 13
-AGENT2_POSITION = 22
-TARGET_POSITION = 14
-
 
 class AgentsEnv_v0(Env):
 
-  def __init__(self, flights, state):
+  def __init__(self, state, flights):
 
     self.flights = flights
     self.initial_state = state.copy()
 
-    self.state = state.copy()
+    self.state = list(self.initial_state.values())
 
-    self.observation_space = Dict({
-      "spyPosition": Discrete(len(flights)),
-      "agent1Position": Discrete(len(flights)),
-      "agent2Position": Discrete(len(flights)),
-      "targetPosition": Discrete(len(flights))
-      })
+    self.observation_space = MultiDiscrete([
+      len(flights),
+      len(flights),
+      len(flights),
+      len(flights)
+      ])
 
-    self.action_space = MultiDiscrete([len(flights)-1, len(flights)-1]) 
+    self.action_space = MultiDiscrete([len(flights), len(flights)]) 
 
     self.win = 0
     self.lose = 0
     self.ilegal_step = 0
 
-    spy_env = SpyEnv_v2(flights, state)
-    self.spyModel = Model.Model(spy_env, isNew=False)
+    spy_env = SpyEnv_v2(state, flights)
+    self.spyModel = Model.Model(spy_env, name='SpyEnv_v2', isNew=False)
 
   
 
@@ -46,28 +41,28 @@ class AgentsEnv_v0(Env):
     done = False
     info = {}
 
-    for i in range(len(actions)):
-      #check if actions are legal
-      legal_flights = self.getPossibleFlightsFromCurrentPosition(self.state[f"agent{i+1}Position"])
-      if(actions[i] not in legal_flights):
-        self.ilegal_step +=1
-        reward = -100
-        return self.state, reward, True, info
+    # for i in range(len(actions)):
+    #   #check if actions are legal
+    #   legal_flights = self.getPossibleFlightsFromCurrentPosition(self.state[i+1])
+    #   if(actions[i] not in legal_flights):
+    #     self.ilegal_step +=1
+    #     reward = -100
+    #     return self.state, reward, True, info
     
     #The spy moving first
     self.moveOpponentSpy()
 
     #move agents
     for i in range(len(actions)):
-      self.state[f"agent{i+1}Position"] = actions[i]
+      self.state[i+1] = actions[i]
 
     #Calculate reward
     if self.isSpyAndAgentInSamePosition(): 
       self.win +=1
-      reward = 10
+      reward = 100
       done = True
 
-    elif self.state['spyPosition'] == self.state['targetPosition']: 
+    elif self.state[0] == self.state[3]: 
       self.lose +=1
       reward = -50
       done = True
@@ -76,25 +71,39 @@ class AgentsEnv_v0(Env):
     return self.state, reward, done, info
   
   def isSpyAndAgentInSamePosition(self):
-    return self.state['spyPosition'] == self.state['agent1Position'] or self.state['spyPosition'] == self.state['agent2Position']
+    return self.state[0] == self.state[1] or self.state[0] == self.state[2]
 
  #currentPoistion is Tuple (row,col)
   def getPossibleFlightsFromCurrentPosition(self, currentPosition):
     return self.flights[currentPosition]['destinations']
   
+  def mask_actions(self):
+    mask_actions = []
+    for i in range(2):
+      agent_mask = []
+      valid_actions = self.getPossibleFlightsFromCurrentPosition(self.state[i+1])
+      for i in range(len(self.flights)):
+        if i in valid_actions:
+          agent_mask.append(True)
+          continue
+        agent_mask.append(False)
+      mask_actions.append(agent_mask)
+    mask_actions = np.array(mask_actions)
+    return mask_actions
+
 
   #Move spy
   def moveOpponentSpy(self):
     #get action from the Spy model
     action = self.spyModel.predict(self.state)
-    action = action[0].item()
+    action = action.item()
     #check if action is legal (based on the spy location)
-    legal_actions = self.getPossibleFlightsFromCurrentPosition(self.state['spyPosition'])
+    legal_actions = self.getPossibleFlightsFromCurrentPosition(self.state[0])
     if(action not in legal_actions):
     #if model predicted ilegal action, spy will move to the traget by shortest path   
-      action = self.get_spy_next_airPort_by_shortest_path(self.state['spyPosition'])
+      action = self.get_spy_next_airPort_by_shortest_path(self.state[0])
     #update spy to new position
-    self.state["spyPosition"] = action
+    self.state[0] = action
 
 
   #self.col represent the number of columns in the grid
@@ -103,7 +112,7 @@ class AgentsEnv_v0(Env):
   
   def get_spy_next_airPort_by_shortest_path(self, spy_airport_index):
     #calculate shortest path between spy to target
-    path = self.shortest_path(spy_airport_index, self.state['targetPosition'])
+    path = self.shortest_path(spy_airport_index, self.state[3])
     return path[1]
   
   def shortest_path(self, node1, node2):
@@ -141,10 +150,7 @@ class AgentsEnv_v0(Env):
     return
   
   def reset(self):
-    self.state["spyPosition"] = SPY_POSITION
-    self.state["agent1Position"] = AGENT1_POSITION
-    self.state["agent2Position"] = AGENT2_POSITION
-
+    self.state = list(self.initial_state.values())
     return self.state
 
   def stats(self):

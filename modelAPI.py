@@ -31,10 +31,10 @@ app.add_middleware(
 async def whereToFlyAgents(item: gameState):
   print(item)
   obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
-  env = AgentsEnv_v0(flights)
-  model = Model.Model(env, isNew=False)
+  env = AgentsEnv_v0(obs.state, flights)
+  model = Model.Model(env, name='AgnetsEnv_v0', isNew=False)
   print(obs.state)
-  res = model.predict(obs.state)[0]
+  res = model.predict(env.state)
   res1 = obs.get_air_port_id_by_index(res[0])
   res2 = obs.get_air_port_id_by_index(res[1])
   return {'result':[res1, res2]}
@@ -47,11 +47,13 @@ async def whereToFlySPY(item: gameState):
   obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
   env = SpyEnv_v2(obs.state, flights)
 
-  model = Model.Model(env, isNew=False)
+  model = Model.Model(env, name='SpyEnv_v2', isNew=False)
   print(obs.state)
-  res = model.predict(obs.state)
-  res = res[0].item()
+  res = model.predict(env.state)
+  res = res.item()
+
   res = obs.get_air_port_id_by_index(res)
+  print(res)
   return {'result':res}
   # return {'result':1}
 

@@ -76,10 +76,10 @@ def mask_fn(env):
 
 
 
-spy_env = SpyEnv_v2(state, flights)
-spy_env = ActionMasker(spy_env, mask_fn)
-spy_model = Model.Model(spy_env, name='SpyEnv_v2', isNew=False)
-print(spy_model.test_model(20))
+
+# spy_env = SpyEnv_v2(state, flights)
+# path = spy_env.shortest_path(0, 14)
+# print(path)
 
 
 
@@ -125,12 +125,13 @@ print(spy_model.test_model(20))
 # print(results)
 # agents_v0 vs spy_v2
 
-# agents_env = AgentsEnv_v0(flights, state)
-# agents_model = Model.Model(agents_env, isNew=True)
-# agents_model.learn(20000)
-# # agents_model.evaluate_model(10000)
-# agents_env.reset_stats()
-# agents_model.test_model(5)
+agents_env = AgentsEnv_v0(state, flights)
+agents_env = ActionMasker(agents_env, mask_fn)
+agents_model = Model.Model(agents_env, name='AgnetsEnv_v0', isNew=True)
+agents_model.learn(20000)
+# agents_model.evaluate_model(10000)
+agents_env.reset_stats()
+print(agents_model.test_model(20))
 
 #spy_v3 vs agents_v0
 # spy_env = SpyEnv_v3(flights)
