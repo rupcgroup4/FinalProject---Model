@@ -12,74 +12,76 @@ state = {
   "spyPosition": 0, 
   "agent1Position": 1, 
   "agent2Position": 7,
-  "targetPosition": 27
+  "targetPosition": 24
 }
 
 def mask_fn(env):
   return env.mask_actions()
 
-# order_for_train = []
-# # BFS algorithm
-# def bfs(root):
+order_for_train = []
+# BFS algorithm
+def bfs(root):
 
-#   visited = set() 
-#   queue = collections.deque([root])
-#   visited.add(root)
-#   while queue:
-#     # Dequeue a vertex from queue
-#     vertex = queue.popleft()
-#     if(vertex != root):
-#       order_for_train.append(vertex)
-#     # If not visited, mark it as visited, and
-#     # enqueue it
-#     for neighbour in flights[vertex]['destinations']:
-#       if neighbour not in visited:
-#         visited.add(neighbour)
-#         queue.append(neighbour)
+  visited = set() 
+  queue = collections.deque([root])
+  visited.add(root)
+  while queue:
+    # Dequeue a vertex from queue
+    vertex = queue.popleft()
+    if(vertex != root):
+      order_for_train.append(vertex)
+    # If not visited, mark it as visited, and
+    # enqueue it
+    for neighbour in flights[vertex]['destinations']:
+      if neighbour not in visited:
+        visited.add(neighbour)
+        queue.append(neighbour)
 
-# bfs(0)
+bfs(0)
 
-# first = False
-# counter = 0
+first = True
+counter = 0
 # while counter < 5:
-#   f = open('learning_process.txt', 'a')
-#   f.write(f"************* learning {counter+1}*************\n")
-#   f.close()
-#   for i in order_for_train:
-#     state['targetPosition'] = i
-#     if(len(set(state.values())) < 4):
-#       continue
-    
-#     spy_env = SpyEnv_v2(state, flights)
-#     spy_env = ActionMasker(spy_env, mask_fn)
-
-#     if first:
-#       first = False
-#       spy_model = Model.Model(spy_env, isNew=True)
-#     else:
-#       spy_model = Model.Model(spy_env, isNew=False)
-    
-#     distance = spy_env.shortest_path(state['spyPosition'], state['targetPosition'])
-#     distance = len(distance) - 1
-    
-#     spy_model.learn(10000 * distance)
-#     spy_env.reset_stats()
-#     res = spy_model.test_model(20)
-#     if res:
-#       f = open('learning_process.txt', 'a')
-#       f.write(f"{res['state']}, {res['win']}, {res['lose']}, {res['ilegal']}\n") 
-#       f.close()
-   
-#   counter+=1
-
-
-
-
+f = open('learning_process.txt', 'a')
+f.write(f"************* learning {counter+1}*************\n")
+f.close()
+# for i in order_for_train:
+state['targetPosition'] = 24
+# if(len(set(state.values())) < 4):
+#   continue
 
 spy_env = SpyEnv_v2(state, flights)
 spy_env = ActionMasker(spy_env, mask_fn)
-spy_model = Model.Model(spy_env, name='SpyEnv_v2', isNew=False)
-print(spy_model.test_model(20))
+if first:
+  first = False
+  spy_model = Model.Model(spy_env, name='SpyEnv_v2', isNew=True)
+else:
+  spy_model = Model.Model(spy_env, name='SpyEnv_v2', isNew=False)
+
+distance = spy_env.shortest_path(state['spyPosition'], state['targetPosition'])
+distance = len(distance) - 1
+
+spy_model.learn(50000)
+spy_env.reset_stats()
+res = spy_model.test_model(20)
+# if res:
+#   f = open('learning_process-test.txt', 'a')
+#   f.write(f"{res['state']}, {res['win']}, {res['lose']}, {res['ilegal']}\n") 
+#   f.close()
+ 
+# counter+=1
+
+
+
+
+
+
+
+# spy_env = SpyEnv_v2(state, flights)
+# spy_env = ActionMasker(spy_env, mask_fn)
+# spy_model = Model.Model(spy_env, name='SpyEnv_v2', isNew=True)
+# spy_model.learn(50000)
+# print(spy_model.test_model(20))
 
 
 

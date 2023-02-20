@@ -1,4 +1,4 @@
-flights = flights = [
+flights = [
   { "id": "ARN", "destinations": [11, 6, 3, 1] },
   { "id": "MLA", "destinations": [9, 10, 11, 0] },
   { "id": "CUN", "destinations": [5, 6, 4, 3] },

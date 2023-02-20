@@ -29,7 +29,7 @@ class Model():
     
   def eval_call_back(self):
      #Specify on after which average reward to stop the training
-    stop_callback = StopTrainingOnRewardThreshold(reward_threshold=100, verbose=1)
+    stop_callback = StopTrainingOnRewardThreshold(reward_threshold=1, verbose=1)
     #Callback that going to get triggered after each training round
     self.eval_callback = EvalCallback(self.env,
                                 #call the callback on each new best score
@@ -38,10 +38,12 @@ class Model():
                                 eval_freq=5000,
                                 #save the best model as file
                                 best_model_save_path=self.save_path,
-                                verbose=1)
+                                verbose=1,
+                                log_path=self.log_path
+                                )
 
   def learn(self, total_timesteps=1000):
-    self.model.learn(total_timesteps=total_timesteps, callback=self.eval_callback)
+    self.model.learn(total_timesteps=total_timesteps)
     # self.model.save(self.save_path)
 
 
@@ -69,13 +71,13 @@ class Model():
             steps +=1
     win, lose, ilegal_step = self.env.stats()
     # if(win > 0):
-    return {
-      'state':  self.env.initial_state,
-      'win': win,
-      'lose': lose,
-      'ilegal': ilegal_step
-    }
-    # print(f'win {win}, lose {lose}, steps {steps}, ilegal {ilegal_step}')
+    # return {
+    #   'state':  self.env.initial_state,
+    #   'win': win,
+    #   'lose': lose,
+    #   'ilegal': ilegal_step
+    # }
+    print(f'win {win}, lose {lose}, steps {steps}, ilegal {ilegal_step}')
   
     
 

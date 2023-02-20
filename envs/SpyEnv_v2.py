@@ -40,6 +40,8 @@ class SpyEnv_v2(Env):
     self.lose = 0
     self.ilegal_step = 0
     self.episode_steps = 0
+    self.game_reward = 0
+    
 
   
 
@@ -51,13 +53,15 @@ class SpyEnv_v2(Env):
     info = {}
 
     if(self.episode_steps > 100):
-      return self.state, -10, True, info
+      reward = -10
+      return self.state, reward, True, info
 
     #check if action is legal
     legal_flights = self.getPossibleFlightsFromCurrentPosition(self.state[0])
     if(action not in legal_flights):
       self.ilegal_step +=1
-      reward = -50
+      reward = 0
+      self.game_reward += reward 
       return self.state, reward, True, info
 
     #Move spy
@@ -66,14 +70,18 @@ class SpyEnv_v2(Env):
     #Calculate reward
     if self.isSpyAndAgentInSamePosition(): 
       self.lose +=1
-      reward = -50
+      reward = -1
+      self.game_reward += reward 
       done = True
     elif self.state[0] == self.state[3]: 
       self.win +=1
-      reward = 100
-      shortest_path_legth = len(self.shortest_path(self.initial_state['spyPosition'], self.state[3])) - 1
-      if(shortest_path_legth == self.episode_steps):
-        reward = 150
+      reward = 1
+      # shortest_path_legth = len(self.shortest_path(self.initial_state['spyPosition'], self.state[3])) - 1
+      # if(shortest_path_legth == self.episode_steps):
+      #   reward = 2
+
+      self.game_reward += reward 
+
       done = True
     #
     else:
@@ -84,7 +92,8 @@ class SpyEnv_v2(Env):
       # check if spy lose after agents moved
       if self.isSpyAndAgentInSamePosition(): 
         self.lose +=1
-        reward = -50
+        reward = -1
+        self.game_reward += reward 
         done = True
 
     return self.state, reward, done, info
@@ -179,6 +188,11 @@ class SpyEnv_v2(Env):
     return
   
   def reset(self):
+    f = open('reward_learning3.txt', 'a')
+    f.write(f"{self.game_reward},") 
+    f.close()
+    self.game_reward = 0 
+    
     self.state = list(self.initial_state.values())
     self.episode_steps = 0
     return self.state

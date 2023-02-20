@@ -66,3 +66,29 @@
 {'spyPosition': 0, 'agent1Position': 1, 'agent2Position': 7, 'targetPosition': 2}, 19, 0, 0
 {'spyPosition': 0, 'agent1Position': 1, 'agent2Position': 7, 'targetPosition': 4}, 19, 1, 0
 {'spyPosition': 0, 'agent1Position': 1, 'agent2Position': 7, 'targetPosition': 8}, 0, 1, 0
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
+************* learning 1*************
