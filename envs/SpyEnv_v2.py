@@ -39,6 +39,7 @@ class SpyEnv_v2(Env):
     self.win = 0
     self.lose = 0
     self.ilegal_step = 0
+    self.tie = 0
     self.episode_steps = 0
     self.game_reward = 0
     
@@ -52,16 +53,17 @@ class SpyEnv_v2(Env):
     done = False
     info = {}
 
-    if(self.episode_steps > 100):
-      reward = -10
+    if(self.episode_steps > 30):
+      self.tie +=1
+      reward = -2
+      self.game_reward += reward
       return self.state, reward, True, info
 
     #check if action is legal
     legal_flights = self.getPossibleFlightsFromCurrentPosition(self.state[0])
     if(action not in legal_flights):
       self.ilegal_step +=1
-      reward = 0
-      self.game_reward += reward 
+      reward = -3
       return self.state, reward, True, info
 
     #Move spy
@@ -71,17 +73,17 @@ class SpyEnv_v2(Env):
     if self.isSpyAndAgentInSamePosition(): 
       self.lose +=1
       reward = -1
-      self.game_reward += reward 
+      self.game_reward += reward
       done = True
     elif self.state[0] == self.state[3]: 
       self.win +=1
       reward = 1
+      
       # shortest_path_legth = len(self.shortest_path(self.initial_state['spyPosition'], self.state[3])) - 1
       # if(shortest_path_legth == self.episode_steps):
       #   reward = 2
 
-      self.game_reward += reward 
-
+      self.game_reward += reward
       done = True
     #
     else:
@@ -93,7 +95,7 @@ class SpyEnv_v2(Env):
       if self.isSpyAndAgentInSamePosition(): 
         self.lose +=1
         reward = -1
-        self.game_reward += reward 
+        self.game_reward += reward
         done = True
 
     return self.state, reward, done, info
@@ -198,11 +200,12 @@ class SpyEnv_v2(Env):
     return self.state
 
   def stats(self):
-    return self.win, self.lose, self.ilegal_step
+    return self.win, self.lose, self.ilegal_step, self.tie
 
   def reset_stats(self):
     self.win = 0
     self.lose = 0
     self.ilegal_step = 0
+    self.tie = 0
     
 

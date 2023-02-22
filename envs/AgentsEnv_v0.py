@@ -29,6 +29,8 @@ class AgentsEnv_v0(Env):
     self.win = 0
     self.lose = 0
     self.ilegal_step = 0
+    self.tie = 0
+    self.episode_steps = 0
 
     spy_env = SpyEnv_v2(state, flights)
     self.spyModel = Model.Model(spy_env, name='SpyEnv_v2', isNew=False)
@@ -37,17 +39,24 @@ class AgentsEnv_v0(Env):
 
   #action = represent index of airpor in array
   def step(self, actions):
+    self.episode_steps+=1
     reward = 0
     done = False
     info = {}
 
-    # for i in range(len(actions)):
-    #   #check if actions are legal
-    #   legal_flights = self.getPossibleFlightsFromCurrentPosition(self.state[i+1])
-    #   if(actions[i] not in legal_flights):
-    #     self.ilegal_step +=1
-    #     reward = -100
-    #     return self.state, reward, True, info
+
+    if(self.episode_steps > 30):
+      self.tie +=1
+      return self.state, -1, True, info
+
+
+    for i in range(len(actions)):
+      #check if actions are legal
+      legal_flights = self.getPossibleFlightsFromCurrentPosition(self.state[i+1])
+      if(actions[i] not in legal_flights):
+        self.ilegal_step +=1
+        reward = -4
+        return self.state, reward, True, info
     
     #The spy moving first
     self.moveOpponentSpy()
@@ -59,7 +68,7 @@ class AgentsEnv_v0(Env):
     #Calculate reward
     if self.isSpyAndAgentInSamePosition(): 
       self.win +=1
-      reward = 100
+      reward = -1
       done = True
 
     elif self.state[0] == self.state[3]: 
@@ -154,24 +163,12 @@ class AgentsEnv_v0(Env):
     return self.state
 
   def stats(self):
-    return self.win, self.lose, self.ilegal_step
+    return self.win, self.lose, self.ilegal_step, self.tie
 
   def reset_stats(self):
     self.win = 0
     self.lose = 0
     self.ilegal_step = 0
+    self.tie = 0
 
 
-# env = AgentsEnv_v0(4,4)
-
-
-# for i in range(10):
-#   print(env.action_space.sample())
-
-
-# # model = PPO("MultiInputPolicy", env, verbose=1)
-# model = PPO.load("ppo_spy", env=env)
-# model.learn(total_timesteps=25000)
-# win, lose, ilegal_step = env.stats()
-# print(f'win {win}, lose {lose}, ilegal {ilegal_step}')
-# model.save("ppo_spy")

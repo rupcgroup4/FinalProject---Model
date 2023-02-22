@@ -1,7 +1,7 @@
 from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.vec_env import DummyVecEnv
-from stable_baselines3.common.callbacks import EvalCallback, StopTrainingOnRewardThreshold
+from stable_baselines3.common.callbacks import EvalCallback, StopTrainingOnRewardThreshold, StopTrainingOnNoModelImprovement
 from sb3_contrib.common.maskable.policies import MaskableActorCriticPolicy
 
 from sb3_contrib.ppo_mask import MaskablePPO
@@ -19,7 +19,7 @@ class Model():
     #if isNew == True create new model otherwise load existing model
     if isNew:
         # self.model = PPO("MultiInputPolicy", env, verbose=1, tensorboard_log=self.log_path)
-        self.model = MaskablePPO(MaskableActorCriticPolicy, self.env, verbose=1)
+        self.model = MaskablePPO(MaskableActorCriticPolicy, self.env)
     else:
         # self.model = PPO.load(self.save_path+'/best_model', env=env)
         self.model = MaskablePPO.load(self.save_path+'/best_model', env=self.env)
@@ -30,17 +30,23 @@ class Model():
   def eval_call_back(self):
      #Specify on after which average reward to stop the training
     stop_callback = StopTrainingOnRewardThreshold(reward_threshold=1, verbose=1)
+    # # Stop training if there is no improvement after more than 4 evaluations
+    # stop_train_callback = StopTrainingOnNoModelImprovement(max_no_improvement_evals=6, min_evals=8, verbose=1)
     #Callback that going to get triggered after each training round
     self.eval_callback = EvalCallback(self.env,
                                 #call the callback on each new best score
                                 callback_on_new_best=stop_callback,
+                                # #call the callback on after each avaluation
+                                # callback_after_eval = stop_train_callback,
                                 #call the callback each 5000 rounds
                                 eval_freq=5000,
+                                #evluation episodes
+                                n_eval_episodes = 100,
                                 #save the best model as file
                                 best_model_save_path=self.save_path,
                                 verbose=1,
-                                log_path=self.log_path
                                 )
+
 
   def learn(self, total_timesteps=1000):
     self.model.learn(total_timesteps=total_timesteps)
@@ -69,15 +75,16 @@ class Model():
             obs, reward, done, info = self.env.step(action) #Take step based on model prediction
             score += reward
             steps +=1
-    win, lose, ilegal_step = self.env.stats()
+    win, lose, ilegal_step, tie = self.env.stats()
     # if(win > 0):
-    # return {
-    #   'state':  self.env.initial_state,
-    #   'win': win,
-    #   'lose': lose,
-    #   'ilegal': ilegal_step
-    # }
-    print(f'win {win}, lose {lose}, steps {steps}, ilegal {ilegal_step}')
+    return {
+      'state':  self.env.initial_state,
+      'win': win,
+      'lose': lose,
+      'ilegal': ilegal_step,
+      'tie': tie
+    }
+    # print(f'win {win}, lose {lose}, steps {steps}, ilegal {ilegal_step}')
   
     
 
