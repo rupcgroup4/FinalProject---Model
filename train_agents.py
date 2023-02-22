@@ -133,15 +133,7 @@ agents_model.learn(20000)
 agents_env.reset_stats()
 print(agents_model.test_model(20))
 
-#spy_v3 vs agents_v0
-# spy_env = SpyEnv_v3(flights)
-# spy_model = Model.Model(spy_env, isNew=False)
-# spy_model.learn(500000)
-# model.evaluate_model(10000)
 
-
-# spy_env.reset_stats()
-# spy_model.test_model(5)
 
 
 

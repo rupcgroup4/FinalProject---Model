@@ -41,6 +41,8 @@ class SpyEnv_v2(Env):
     self.ilegal_step = 0
     self.tie = 0
     self.episode_steps = 0
+    self.game_reward = 0
+    
 
   
 
@@ -181,6 +183,11 @@ class SpyEnv_v2(Env):
     return
   
   def reset(self):
+    f = open('reward_learning3.txt', 'a')
+    f.write(f"{self.game_reward},") 
+    f.close()
+    self.game_reward = 0 
+    
     self.state = list(self.initial_state.values())
     self.episode_steps = 0
     return self.state

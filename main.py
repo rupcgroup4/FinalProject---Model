@@ -14,12 +14,15 @@ state = {
   "spyPosition": 0, 
   "agent1Position": 1, 
   "agent2Position": 7,
-  "targetPosition": 27
+  "targetPosition": 24
 }
 
 def mask_fn(env):
   return env.mask_actions()
 
+order_for_train = []
+# BFS algorithm
+def bfs(root):
 order_for_train = []
 # BFS algorithm
 def bfs(root):
@@ -38,7 +41,22 @@ def bfs(root):
       if neighbour not in visited:
         visited.add(neighbour)
         queue.append(neighbour)
+  visited = set() 
+  queue = collections.deque([root])
+  visited.add(root)
+  while queue:
+    # Dequeue a vertex from queue
+    vertex = queue.popleft()
+    if(vertex != root):
+      order_for_train.append(vertex)
+    # If not visited, mark it as visited, and
+    # enqueue it
+    for neighbour in flights[vertex]['destinations']:
+      if neighbour not in visited:
+        visited.add(neighbour)
+        queue.append(neighbour)
 
+bfs(0)
 bfs(0)
 
 first = True

@@ -1,0 +1,10 @@
+{'spyPosition': 0, 'agent1Position': 1, 'agent2Position': 7, 'targetPosition': 28}, 6, 14, 0
+{'spyPosition': 0, 'agent1Position': 1, 'agent2Position': 7, 'targetPosition': 28}, 7, 13, 0
+{'spyPosition': 0, 'agent1Position': 1, 'agent2Position': 7, 'targetPosition': 28}, 0, 20, 0
+{'spyPosition': 0, 'agent1Position': 1, 'agent2Position': 7, 'targetPosition': 28}, 20, 0, 0
+{'spyPosition': 0, 'agent1Position': 1, 'agent2Position': 7, 'targetPosition': 28}, 1, 19, 0
+{'spyPosition': 0, 'agent1Position': 1, 'agent2Position': 7, 'targetPosition': 28}, 0, 20, 0
+{'spyPosition': 0, 'agent1Position': 1, 'agent2Position': 7, 'targetPosition': 28}, 16, 4, 0
+{'spyPosition': 0, 'agent1Position': 1, 'agent2Position': 7, 'targetPosition': 28}, 6, 14, 0
+{'spyPosition': 0, 'agent1Position': 1, 'agent2Position': 7, 'targetPosition': 24}, 9, 11, 0
+{'spyPosition': 0, 'agent1Position': 1, 'agent2Position': 7, 'targetPosition': 28}, 0, 20, 0
