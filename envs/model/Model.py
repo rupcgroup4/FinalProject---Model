@@ -32,7 +32,6 @@ class Model():
     stop_callback = StopTrainingOnRewardThreshold(reward_threshold=1, verbose=1)
     # # Stop training if there is no improvement after more than 4 evaluations
     # stop_train_callback = StopTrainingOnNoModelImprovement(max_no_improvement_evals=6, min_evals=8, verbose=1)
-    stop_callback = StopTrainingOnRewardThreshold(reward_threshold=1, verbose=1)
     #Callback that going to get triggered after each training round
     self.eval_callback = EvalCallback(self.env,
                                 #call the callback on each new best score
@@ -42,14 +41,12 @@ class Model():
                                 #call the callback each 5000 rounds
                                 eval_freq=5000,
                                 #evluation episodes
-                                n_eval_episodes = 20,
+                                n_eval_episodes = 100,
                                 #save the best model as file
                                 best_model_save_path=self.save_path,
                                 verbose=1,
                                 )
-                                verbose=1,
-                                log_path=self.log_path
-                                )
+
 
   def learn(self, total_timesteps=1000):
     self.model.learn(total_timesteps=total_timesteps)
@@ -80,14 +77,14 @@ class Model():
             steps +=1
     win, lose, ilegal_step, tie = self.env.stats()
     # if(win > 0):
-    # return {
-    #   'state':  self.env.initial_state,
-    #   'win': win,
-    #   'lose': lose,
-    #   'ilegal': ilegal_step,
+    return {
+      'state':  self.env.initial_state,
+      'win': win,
+      'lose': lose,
+      'ilegal': ilegal_step,
       'tie': tie
-    # }
-    print(f'win {win}, lose {lose}, steps {steps}, ilegal {ilegal_step}')
+    }
+    # print(f'win {win}, lose {lose}, steps {steps}, ilegal {ilegal_step}')
   
     
 
