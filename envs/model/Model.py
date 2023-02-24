@@ -49,7 +49,7 @@ class Model():
 
 
   def learn(self, total_timesteps=1000):
-    self.model.learn(total_timesteps=total_timesteps)
+    self.model.learn(total_timesteps=total_timesteps, callback=self.eval_callback)
     # self.model.save(self.save_path)
 
 
