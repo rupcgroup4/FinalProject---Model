@@ -1,0 +1,3 @@
+iteration, target, wins, loses, tie
+1, 11, 16, 4, 0, 0
+1, 6, 2, 20, 0, 0

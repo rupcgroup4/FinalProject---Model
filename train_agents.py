@@ -61,14 +61,13 @@ while counter < 5:
     
     distance = agents_env.shortest_path(state['spyPosition'], state['targetPosition'])
     distance = len(distance) - 1
-    if(distance > 2):
-      agents_model.learn(10000 * distance)
-      agents_env.reset_stats()
-      res = agents_model.test_model(20)
-      if res:
-        f = open('learning_process-Agents.txt', 'a')
-        f.write(f"{counter+1}, {res['state']['targetPosition']}, {res['win']}, {res['lose']}, {res['ilegal']}, {res['tie']}\n") 
-        f.close()
+    agents_model.learn(10000 * distance)
+    agents_env.reset_stats()
+    res = agents_model.test_model(20)
+    if res:
+      f = open('learning_process-Agents.txt', 'a')
+      f.write(f"{counter+1}, {res['state']['targetPosition']}, {res['win']}, {res['lose']}, {res['ilegal']}, {res['tie']}\n") 
+      f.close()
    
   counter+=1
 

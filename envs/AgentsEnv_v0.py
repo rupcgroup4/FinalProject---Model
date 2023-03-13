@@ -60,6 +60,11 @@ class AgentsEnv_v0(Env):
     
     #The spy moving first
     self.moveOpponentSpy()
+    # Check if Spy wins
+    if self.state[0] == self.state[3]: 
+      self.lose +=1
+      reward = -50
+      done = True
 
     #move agents
     for i in range(len(actions)):
@@ -68,13 +73,10 @@ class AgentsEnv_v0(Env):
     #Calculate reward
     if self.isSpyAndAgentInSamePosition(): 
       self.win +=1
-      reward = -1
+      reward = 1
       done = True
 
-    elif self.state[0] == self.state[3]: 
-      self.lose +=1
-      reward = -50
-      done = True
+
     
 
     return self.state, reward, done, info
@@ -160,6 +162,7 @@ class AgentsEnv_v0(Env):
   
   def reset(self):
     self.state = list(self.initial_state.values())
+    self.episode_steps = 0
     return self.state
 
   def stats(self):
