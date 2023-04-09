@@ -62,20 +62,8 @@ class AgentsEnv_v1(Env):
         self.ilegal_step +=1
         reward = -3
         return self.state, reward, True, info
-<<<<<<< Updated upstream:envs/AgentsEnv_v0.py
-    
-    #The spy moving first
-    self.moveOpponentSpy()
-
-    #move agents
-    for i in range(len(actions)):
-      self.state[i+1] = actions[i]
-
-    #Calculate reward
-=======
       
     #Check if spy lose
->>>>>>> Stashed changes:envs/AgentsEnv.py
     if self.isSpyAndAgentInSamePosition(): 
       self.win +=1
       reward = -1
@@ -90,18 +78,11 @@ class AgentsEnv_v1(Env):
       for i in range(len(actions)):
         self.state[i+1] = actions[i]
 
-<<<<<<< Updated upstream:envs/AgentsEnv_v0.py
-    elif self.state[0] == self.state[3]: 
-      self.lose +=1
-      reward = -50
-      done = True
-=======
       #Calculate reward
       if self.isSpyAndAgentInSamePosition(): 
         self.win +=1
         reward = 1
         done = True
->>>>>>> Stashed changes:envs/AgentsEnv.py
     
     if not done:
       #Spy move
@@ -190,12 +171,9 @@ class AgentsEnv_v1(Env):
   
   def reset(self):
     self.state = list(self.initial_state.values())
-<<<<<<< Updated upstream:envs/AgentsEnv_v0.py
-=======
     self.moveOpponentSpy()
 
     self.episode_steps = 0
->>>>>>> Stashed changes:envs/AgentsEnv.py
     return self.state
 
   def stats(self):

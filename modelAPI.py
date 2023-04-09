@@ -50,11 +50,7 @@ async def whereToFlySPY(item: gameState):
   obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
   env = SpyEnv_v3(obs.state, flights)
 
-<<<<<<< Updated upstream
-  model = Model.Model(env, name='SpyEnv_v2', isNew=False)
-=======
   model = Model.Model(env, name='SpyEnv', isNew=False)
->>>>>>> Stashed changes
   print(obs.state)
   res = model.predict(env.state)
   res = res.item()

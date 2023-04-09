@@ -1,7 +1,6 @@
 import numpy as np
 from gym import Env
 from gym.spaces import Discrete, Box, Dict, MultiDiscrete
-from envs.AgentsEnv import AgentsEnv_v1
 from envs.model import Model
 
 
