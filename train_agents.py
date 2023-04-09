@@ -1,7 +1,6 @@
 from envs.model import Model
-from envs.SpyEnv_v2 import SpyEnv_v2
-from envs.SpyEnv_v3 import SpyEnv_v3
-from envs.AgentsEnv_v0 import AgentsEnv_v0
+from envs.AgentsEnv import AgentsEnv_v1
+
 from envs.flights import flights
 import itertools
 import collections
@@ -10,55 +9,66 @@ import numpy as np
 
 state = {
   "spyPosition": 0, 
-  "agent1Position": 1, 
-  "agent2Position": 7,
-  "targetPosition": 27
+  "agent1Position": 6, 
+  "agent2Position": 14,
+  "targetPosition": 9
 }
 
 def mask_fn(env):
   return env.mask_actions()
 
-order_for_train = []
-# BFS algorithm
-def bfs(root):
 
-  visited = set() 
-  queue = collections.deque([root])
-  visited.add(root)
-  while queue:
-    # Dequeue a vertex from queue
-    vertex = queue.popleft()
-    if(vertex != root):
-      order_for_train.append(vertex)
-    # If not visited, mark it as visited, and
-    # enqueue it
-    for neighbour in flights[vertex]['destinations']:
-      if neighbour not in visited:
-        visited.add(neighbour)
-        queue.append(neighbour)
 
-bfs(0)
+agents_env = AgentsEnv_v1(state, flights, train=True, train_against_model=True)
+agents_env = ActionMasker(agents_env, mask_fn)
+agents_model = Model.Model(agents_env, name='AgnetsEnv_v1', isNew=False)
+agents_model.learn(50000)
+agents_env.reset_stats()
+print(agents_model.test_model(1000))
 
-first = True
-counter = 0
-f = open('learning_process-Agents.txt', 'a')
-f.write("iteration, target, wins, loses, tie\n") 
-f.close()
-while counter < 5:
-  for i in order_for_train:
-    state['targetPosition'] = i
-    if(len(set(state.values())) < 4):
-      continue
+
+# order_for_train = []
+# # BFS algorithm
+# def bfs(root):
+
+#   visited = set() 
+#   queue = collections.deque([root])
+#   visited.add(root)
+#   while queue:
+#     # Dequeue a vertex from queue
+#     vertex = queue.popleft()
+#     if(vertex != root):
+#       order_for_train.append(vertex)
+#     # If not visited, mark it as visited, and
+#     # enqueue it
+#     for neighbour in flights[vertex]['destinations']:
+#       if neighbour not in visited:
+#         visited.add(neighbour)
+#         queue.append(neighbour)
+
+# bfs(0)
+
+# first = True
+# counter = 0
+# f = open('learning_process-Agents.txt', 'a')
+# f.write("iteration, target, wins, loses, tie, ilegal\n") 
+# f.close()
+# while counter < 9:
+#   for i in order_for_train:
+#     state['targetPosition'] = i
+#     if(len(set(state.values())) < 4):
+#       continue
     
-    agents_env = AgentsEnv_v0(state, flights)
-    agents_env = ActionMasker(agents_env, mask_fn)
+#     agents_env = AgentsEnv_v0(state, flights)
+#     agents_env = ActionMasker(agents_env, mask_fn)
 
-    if first:
-      first = False
-      agents_model = Model.Model(agents_env, name='AgnetsEnv_v0', isNew=True)
-    else:
-      agents_model = Model.Model(agents_env, name='AgnetsEnv_v0', isNew=True)
+#     if first:
+#       first = False
+#       agents_model = Model.Model(agents_env, name='AgnetsEnv_v0', isNew=True)
+#     else:
+#       agents_model = Model.Model(agents_env, name='AgnetsEnv_v0', isNew=True)
     
+<<<<<<< Updated upstream
     distance = agents_env.shortest_path(state['spyPosition'], state['targetPosition'])
     distance = len(distance) - 1
     if(distance > 2):
@@ -69,8 +79,20 @@ while counter < 5:
         f = open('learning_process-Agents.txt', 'a')
         f.write(f"{counter+1}, {res['state']['targetPosition']}, {res['win']}, {res['lose']}, {res['ilegal']}, {res['tie']}\n") 
         f.close()
+=======
+#     distance = agents_env.shortest_path(state['spyPosition'], state['targetPosition'])
+#     distance = len(distance) - 1
+#     if distance > 1:
+#       agents_model.learn(10000 * distance)
+#       agents_env.reset_stats()
+#       res = agents_model.test_model(20)
+#       if res:
+#         f = open('learning_process-Agents.txt', 'a')
+#         f.write(f"{counter+1}, {res['state']['targetPosition']}, {res['win']}, {res['lose']}, {res['tie']}, {res['ilegal']}\n") 
+#         f.close()
+>>>>>>> Stashed changes
    
-  counter+=1
+#   counter+=1
 
 
 
@@ -125,13 +147,7 @@ while counter < 5:
 # print(results)
 # agents_v0 vs spy_v2
 
-agents_env = AgentsEnv_v0(state, flights)
-agents_env = ActionMasker(agents_env, mask_fn)
-agents_model = Model.Model(agents_env, name='AgnetsEnv_v0', isNew=True)
-agents_model.learn(20000)
-# agents_model.evaluate_model(10000)
-agents_env.reset_stats()
-print(agents_model.test_model(20))
+
 
 
 

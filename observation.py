@@ -1,6 +1,5 @@
 import numpy as np
 from stable_baselines3 import PPO
-from envs.SpyEnv_v2 import SpyEnv_v2
 import os
 from envs.flights import flights
 
@@ -12,7 +11,7 @@ class Observation():
    
   def create_state(self, spy_position, agent1_position, agent2_position, target_position):
 
-    for i in range(len(flights)-1):
+    for i in range(len(flights)):
       if flights[i]['id'] == spy_position:
         spy_position = i
       if flights[i]['id'] == agent1_position:
@@ -35,9 +34,9 @@ class Observation():
   
 
   def get_air_port_id_by_index(self, airport_index):
-    for i in range(len(flights)-1):
-      if i == airport_index:
-        return flights[i]['id']
+    for i in enumerate(flights):
+      if i[0] == airport_index:
+        return flights[i[0]]['id']
 
 # BKK ='BKK'
 # SHA = 'SHA'

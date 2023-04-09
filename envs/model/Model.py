@@ -22,7 +22,11 @@ class Model():
         self.model = MaskablePPO(MaskableActorCriticPolicy, self.env)
     else:
         # self.model = PPO.load(self.save_path+'/best_model', env=env)
-        self.model = MaskablePPO.load(self.save_path+'/best_model', env=self.env)
+        try:
+          self.model = MaskablePPO.load(self.save_path+'/best_model', env=self.env)
+        except:
+          print('Model fail')
+          self.model = MaskablePPO(MaskableActorCriticPolicy, self.env)
 
     self.eval_call_back()
 
@@ -41,7 +45,7 @@ class Model():
                                 #call the callback each 5000 rounds
                                 eval_freq=5000,
                                 #evluation episodes
-                                n_eval_episodes = 100,
+                                n_eval_episodes = 500,
                                 #save the best model as file
                                 best_model_save_path=self.save_path,
                                 verbose=1,
@@ -58,6 +62,7 @@ class Model():
 
 
   def predict(self, obs):
+    self.env.state = obs
     action, _states = self.model.predict(obs, action_masks=self.env.mask_actions()) 
     return action
 

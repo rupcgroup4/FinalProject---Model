@@ -4,8 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from observation import Observation
 from envs.model import Model
-from envs.SpyEnv_v2 import SpyEnv_v2
-from envs.AgentsEnv_v0  import AgentsEnv_v0
+from envs.AgentsEnv  import AgentsEnv_v1
+from envs.SpyEnv import SpyEnv_v3
+
 
 from envs.flights import flights
 
@@ -31,13 +32,15 @@ app.add_middleware(
 async def whereToFlyAgents(item: gameState):
   print(item)
   obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
-  env = AgentsEnv_v0(obs.state, flights)
-  model = Model.Model(env, name='AgnetsEnv_v0', isNew=False)
+  env = AgentsEnv_v1(obs.state, flights)
+  model = Model.Model(env, name='AgnetsEnv', isNew=False)
+
   print(obs.state)
   res = model.predict(env.state)
   res1 = obs.get_air_port_id_by_index(res[0])
   res2 = obs.get_air_port_id_by_index(res[1])
   return {'result':[res1, res2]}
+
   # return {'result':1}
 
 
@@ -45,9 +48,13 @@ async def whereToFlyAgents(item: gameState):
 async def whereToFlySPY(item: gameState):
   print(item)
   obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
-  env = SpyEnv_v2(obs.state, flights)
+  env = SpyEnv_v3(obs.state, flights)
 
+<<<<<<< Updated upstream
   model = Model.Model(env, name='SpyEnv_v2', isNew=False)
+=======
+  model = Model.Model(env, name='SpyEnv', isNew=False)
+>>>>>>> Stashed changes
   print(obs.state)
   res = model.predict(env.state)
   res = res.item()
