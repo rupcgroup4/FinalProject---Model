@@ -15,6 +15,7 @@ class gameState(BaseModel):
   agent1_position: str
   agent2_position: str
   target_position: str
+  isNew: bool
 
 app = FastAPI()
 
@@ -33,7 +34,7 @@ async def whereToFlyAgents(item: gameState):
   print(item)
   obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
   env = AgentsEnv_v1(obs.state, flights)
-  model = Model.Model(env, name='AgnetsEnv', isNew=False)
+  model = Model.Model(env, name='AgnetsEnv', isNew=not item.isNew)
 
   print(obs.state)
   res = model.predict(env.state)
@@ -50,7 +51,7 @@ async def whereToFlySPY(item: gameState):
   obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
   env = SpyEnv_v3(obs.state, flights)
 
-  model = Model.Model(env, name='SpyEnv', isNew=False)
+  model = Model.Model(env, name='SpyEnv', isNew=not item.isNew)
   print(obs.state)
   res = model.predict(env.state)
   res = res.item()
