@@ -38,18 +38,7 @@ class Observation():
       if i[0] == airport_index:
         return flights[i[0]]['id']
 
-# BKK ='BKK'
-# SHA = 'SHA'
-# LGA = 'LGA'
-# obs = Observation('BKK','SHA','LGA')
 
-# # res = obs.predict()
-
-# # res = res[0]
-# # print(res)
-# res = obs.getIndexesFromAirPortIds(BKK, SHA, LGA)
-
-# print(res)
 
 
       

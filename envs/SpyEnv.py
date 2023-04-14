@@ -15,10 +15,7 @@ class SpyEnv_v3(Env):
   def __init__(self, state, flights, train_against_model=False):
     
     self.flights = flights
-    
-
     self.initial_state = state.copy()
-
     self.state = list(self.initial_state.values())
     
     self.observation_space = MultiDiscrete([
@@ -175,7 +172,6 @@ class SpyEnv_v3(Env):
     return path[1]
 
   def shortest_path(self, node1, node2):
-    rnd = False
     path_list = [[node1]]
     path_index = 0
     # To keep track of previously visited nodes

@@ -39,9 +39,6 @@ class AgentsEnv_v1(Env):
     self.train_against_model = train_against_model
 
 
-
-  
-
   #action = represent index of airpor in array
   def step(self, actions):
     self.episode_steps+=1
