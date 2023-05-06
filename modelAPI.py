@@ -34,7 +34,7 @@ async def whereToFlyAgents(item: gameState):
   print(item)
   obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
   env = AgentsEnv_v1(obs.state, flights)
-  model = Model.Model(env, name='AgnetsEnv', isNew=not item.isNew)
+  model = Model.Model(env, name='AgentsEnv', isNew=not item.isNew)
 
   print(obs.state)
   res = model.predict(env.state)
@@ -51,7 +51,7 @@ async def whereToFlySPY(item: gameState):
   obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
   env = SpyEnv_v3(obs.state, flights)
 
-  model = Model.Model(env, name='SpyEnv', isNew=not item.isNew)
+  model = Model.Model(env, name='spy_300k_vs_agents_50k', isNew=not item.isNew)
   print(obs.state)
   res = model.predict(env.state)
   res = res.item()

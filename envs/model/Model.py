@@ -12,7 +12,10 @@ class Model():
 
   def __init__(self, env, name, isNew=False):
     self.log_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'Logs', 'PPO', name)
-    self.save_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'SavedModels', 'PPO',name)
+    if name == 'SpyEnv' or name == 'AgentsEnv':
+      self.save_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'SavedModels', 'PPO',name)
+    else:
+      self.save_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'SavedModels', 'PPO')
 
     self.env = env
 
@@ -23,7 +26,13 @@ class Model():
     else:
         # self.model = PPO.load(self.save_path+'/best_model', env=env)
         try:
-          self.model = MaskablePPO.load(self.save_path+'/best_model', env=self.env)
+          if name == 'SpyEnv' or name == 'AgentsEnv':
+            self.model = MaskablePPO.load(self.save_path+'/best_model', env=self.env)
+          else:
+            if name[0] == 's':
+              self.model = MaskablePPO.load(f'{self.save_path}/SpyEnv/{name}', env=self.env)
+            else:
+              self.model = MaskablePPO.load(f'{self.save_path}/AgentsEnv/{name}', env=self.env)
         except:
           print('Model fail')
           self.model = MaskablePPO(MaskableActorCriticPolicy, self.env)
@@ -33,7 +42,7 @@ class Model():
     
   def eval_call_back(self):
      #Specify on after which average reward to stop the training
-    stop_callback = StopTrainingOnRewardThreshold(reward_threshold=0.9, verbose=1)
+    stop_callback = StopTrainingOnRewardThreshold(reward_threshold=1.1, verbose=1)
     # # Stop training if there is no improvement after more than 4 evaluations
     # stop_train_callback = StopTrainingOnNoModelImprovement(max_no_improvement_evals=6, min_evals=8, verbose=1)
     #Callback that going to get triggered after each training round

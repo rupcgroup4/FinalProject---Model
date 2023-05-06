@@ -21,14 +21,14 @@ def mask_fn(env):
   return env.mask_actions()
 
 
-spy_env = SpyEnv_v3(state, flights, train_against_model=True)
-spy_env = ActionMasker(spy_env, mask_fn)
-spy_model = Model.Model(spy_env, name='SpyEnv', isNew=False)
-spy_model.learn(250000)
-# agents_env = AgentsEnv_v1(state, flights, train=True, train_against_model=True)
-# agents_env = ActionMasker(agents_env, mask_fn)
-# agents_model = Model.Model(agents_env, name='AgnetsEnv', isNew=True)
-# agents_model.learn(50000)
+# spy_env = SpyEnv_v3(state, flights, train_against_model=True)
+# spy_env = ActionMasker(spy_env, mask_fn)
+# spy_model = Model.Model(spy_env, name='SpyEnv', isNew=False)
+# spy_model.learn(250000)
+agents_env = AgentsEnv_v1(state, flights, train=True, train_against_model=True)
+agents_env = ActionMasker(agents_env, mask_fn)
+agents_model = Model.Model(agents_env, name='AgentsEnv', isNew=False)
+agents_model.learn(250000)
 
 
 # counter = 0
@@ -47,10 +47,10 @@ spy_model.learn(250000)
 
 #   counter +=1
 
-spy_env.reset_stats()
-print(spy_model.test_model(1000))
-# agents_env.reset_stats()
-# print(agents_model.test_model(1000))
+# spy_env.reset_stats()
+# print(spy_model.test_model(1000))
+agents_env.reset_stats()
+print(agents_model.test_model(1000))
 
 # order_for_train = []
 # # BFS algorithm
