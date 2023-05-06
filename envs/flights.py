@@ -20,3 +20,4 @@ flights = [
   {"id":"JIJ","destinations":[4,19,15]},
   {"id":"NIM","destinations":[18,17,16,0]}
 ]
+

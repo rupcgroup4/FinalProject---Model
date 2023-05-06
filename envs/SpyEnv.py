@@ -116,7 +116,11 @@ class SpyEnv_v3(Env):
       done = True
     elif self.state[0] == self.state[3]: 
       self.win +=1
-      reward = 1
+
+      shortest_path = len(self.shortest_path(self.initial_state['spyPosition'], self.initial_state['targetPosition'])) - 1
+      steps_played_over_shorthest_path = self.episode_steps - shortest_path
+      reward = 1 - (steps_played_over_shorthest_path / 30)
+      # reward = 1
       done = True
     else:
       # move agents

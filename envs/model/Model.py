@@ -33,7 +33,7 @@ class Model():
     
   def eval_call_back(self):
      #Specify on after which average reward to stop the training
-    stop_callback = StopTrainingOnRewardThreshold(reward_threshold=1, verbose=1)
+    stop_callback = StopTrainingOnRewardThreshold(reward_threshold=0.9, verbose=1)
     # # Stop training if there is no improvement after more than 4 evaluations
     # stop_train_callback = StopTrainingOnNoModelImprovement(max_no_improvement_evals=6, min_evals=8, verbose=1)
     #Callback that going to get triggered after each training round
@@ -45,10 +45,11 @@ class Model():
                                 #call the callback each 5000 rounds
                                 eval_freq=5000,
                                 #evluation episodes
-                                n_eval_episodes = 500,
+                                n_eval_episodes = 1000,
                                 #save the best model as file
                                 best_model_save_path=self.save_path,
                                 verbose=1,
+                                log_path=self.log_path
                                 )
 
 
