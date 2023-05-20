@@ -2,15 +2,14 @@ import numpy as np
 from gym import Env
 from gym.spaces import Discrete, Box, Dict, MultiDiscrete
 from envs.model import Model
-from envs.SpyEnv_v2 import SpyEnv_v2
 from stable_baselines3 import PPO
 
 
 
 
-class AgentsEnv_v0(Env):
+class AgentsEnv_v1(Env):
 
-  def __init__(self, state, flights):
+  def __init__(self, state, flights, train=False, train_against_model=False):
 
     self.flights = flights
     self.initial_state = state.copy()
@@ -32,10 +31,13 @@ class AgentsEnv_v0(Env):
     self.tie = 0
     self.episode_steps = 0
 
-    spy_env = SpyEnv_v2(state, flights)
-    self.spyModel = Model.Model(spy_env, name='SpyEnv_v2', isNew=False)
+    if train and train_against_model:
+      from envs.SpyEnv import SpyEnv_v3
+      spy_env = SpyEnv_v3(state, flights)
+      self.spyModel = Model.Model(spy_env, name='SpyEnv', isNew=False)
+    
+    self.train_against_model = train_against_model
 
-  
 
   #action = represent index of airpor in array
   def step(self, actions):
@@ -47,7 +49,7 @@ class AgentsEnv_v0(Env):
 
     if(self.episode_steps > 30):
       self.tie +=1
-      return self.state, -1, True, info
+      return self.state, -2, True, info
 
 
     for i in range(len(actions)):
@@ -55,29 +57,34 @@ class AgentsEnv_v0(Env):
       legal_flights = self.getPossibleFlightsFromCurrentPosition(self.state[i+1])
       if(actions[i] not in legal_flights):
         self.ilegal_step +=1
-        reward = -4
+        reward = -3
         return self.state, reward, True, info
-    
-    #The spy moving first
-    self.moveOpponentSpy()
-    # Check if Spy wins
-    if self.state[0] == self.state[3]: 
-      self.lose +=1
-      reward = -50
-      done = True
-
-    #move agents
-    for i in range(len(actions)):
-      self.state[i+1] = actions[i]
-
-    #Calculate reward
+      
+    #Check if spy lose
     if self.isSpyAndAgentInSamePosition(): 
       self.win +=1
-      reward = 1
+      reward = -1
       done = True
+    # Check if Spy wins
+    elif self.state[0] == self.state[3] and not self.isSpyAndAgentInSamePosition(): 
+        self.lose +=1
+        reward = -1
+        done = True    
+    else:
+      #move agents
+      for i in range(len(actions)):
+        self.state[i+1] = actions[i]
 
-
+      #Calculate reward
+      if self.isSpyAndAgentInSamePosition(): 
+        self.win +=1
+        reward = 1
+        done = True
     
+    if not done:
+      #Spy move
+      self.moveOpponentSpy()
+     
 
     return self.state, reward, done, info
   
@@ -105,13 +112,12 @@ class AgentsEnv_v0(Env):
 
   #Move spy
   def moveOpponentSpy(self):
-    #get action from the Spy model
-    action = self.spyModel.predict(self.state)
-    action = action.item()
-    #check if action is legal (based on the spy location)
-    legal_actions = self.getPossibleFlightsFromCurrentPosition(self.state[0])
-    if(action not in legal_actions):
-    #if model predicted ilegal action, spy will move to the traget by shortest path   
+    if self.train_against_model:
+      #get action from the Spy model
+      action = self.spyModel.predict(self.state)
+      action = action.item()
+    else:
+      #spy will move to the traget by shortest path   
       action = self.get_spy_next_airPort_by_shortest_path(self.state[0])
     #update spy to new position
     self.state[0] = action
@@ -162,6 +168,8 @@ class AgentsEnv_v0(Env):
   
   def reset(self):
     self.state = list(self.initial_state.values())
+    self.moveOpponentSpy()
+
     self.episode_steps = 0
     return self.state
 

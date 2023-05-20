@@ -1,17 +1,21 @@
 import numpy as np
 from gym import Env
-from gym.spaces import Discrete, Box, Dict,MultiDiscrete
+from gym.spaces import Discrete, Box, Dict, MultiDiscrete
+from envs.model import Model
 
 
-class SpyEnv_v2(Env):
+SPY_POSITION = 32
+AGENT1_POSITION = 13
+AGENT2_POSITION = 22
+TARGET_POSITION = 14
 
-  def __init__(self, state, flights):
+
+class SpyEnv_v3(Env):
+
+  def __init__(self, state, flights, train_against_model=False):
     
     self.flights = flights
-    
-
     self.initial_state = state.copy()
-
     self.state = list(self.initial_state.values())
     
     self.observation_space = MultiDiscrete([
@@ -31,20 +35,55 @@ class SpyEnv_v2(Env):
     self.action_space = Discrete(len(flights))
 
 
-    self.agents_path = {
-      "agnet1Position": [],
-      "agent2Position": []
-    }
-
     self.win = 0
     self.lose = 0
     self.ilegal_step = 0
     self.tie = 0
     self.episode_steps = 0
-    self.game_reward = 0
+
+    if train_against_model:
+      from envs.AgentsEnv import AgentsEnv_v1
+      agents_env = AgentsEnv_v1(state, flights)
+      self.agents_model = Model.Model(agents_env, name='AgnetsEnv', isNew=False)
+      
+
+    self.train_against_model = train_against_model
+
+    self.sp_ST = len(self.shortest_path(self.initial_state['spyPosition'], self.state[3]))-1
+    self.sp_SA1 = len(self.shortest_path(self.initial_state['spyPosition'], self.state[1]))-1
+    self.sp_SA2 = len(self.shortest_path(self.initial_state['spyPosition'], self.state[2]))-1
     
 
-  
+  def historicFunction(self):
+    reward = 0
+
+    sp_ST = len(self.shortest_path(self.state[0], self.state[3]))-1
+    sp_SA1 = len(self.shortest_path(self.state[0], self.state[1]))-1
+    sp_SA2 = len(self.shortest_path(self.state[0], self.state[2]))-1
+
+    if sp_ST < self.sp_ST: 
+      reward += 0.1
+
+    if sp_ST > self.sp_ST: 
+      reward -= 0.1
+
+    if sp_ST == 1: 
+      reward += 0.2
+    
+    if sp_SA1 < self.sp_SA1 and sp_SA2 < self.sp_SA2: 
+      reward += 0.2
+    
+    if sp_SA1 < self.sp_SA1 or sp_SA2 < self.sp_SA2: 
+      reward += 0.1
+
+    if sp_SA1 == 1: 
+      reward -= 0.1
+    
+    if sp_SA2 == 1: 
+      reward -= 0.1
+
+    return reward
+
 
   #action = represent index of airpor in array
   def step(self, action):
@@ -54,9 +93,7 @@ class SpyEnv_v2(Env):
     info = {}
 
     if(self.episode_steps > 30):
-      self.tie +=1
       reward = -2
-      self.game_reward += reward
       return self.state, reward, True, info
 
     #check if action is legal
@@ -69,33 +106,30 @@ class SpyEnv_v2(Env):
     #Move spy
     self.state[0] = action
 
+    # if reward == 0:
+    #   reward = self.historicFunction()
+
     #Calculate reward
     if self.isSpyAndAgentInSamePosition(): 
       self.lose +=1
       reward = -1
-      self.game_reward += reward
       done = True
     elif self.state[0] == self.state[3]: 
       self.win +=1
-      reward = 1
-      
-      # shortest_path_legth = len(self.shortest_path(self.initial_state['spyPosition'], self.state[3])) - 1
-      # if(shortest_path_legth == self.episode_steps):
-      #   reward = 2
 
-      self.game_reward += reward
+      shortest_path = len(self.shortest_path(self.initial_state['spyPosition'], self.initial_state['targetPosition'])) - 1
+      steps_played_over_shorthest_path = self.episode_steps - shortest_path
+      reward = 1 - (steps_played_over_shorthest_path / 30)
+      # reward = 1
       done = True
-    #
     else:
       # move agents
-      self.moveOpponentAgent(1)
-      self.moveOpponentAgent(2)
+      self.moveOpponentAgents()
 
       # check if spy lose after agents moved
       if self.isSpyAndAgentInSamePosition(): 
         self.lose +=1
         reward = -1
-        self.game_reward += reward
         done = True
 
     return self.state, reward, done, info
@@ -103,11 +137,11 @@ class SpyEnv_v2(Env):
   def isSpyAndAgentInSamePosition(self):
     return self.state[0] == self.state[1] or self.state[0] == self.state[2]
 
-  #currentPoistion is Tuple (row,col)
+
+  #currentPoistion is index in flights array
   def getPossibleFlightsFromCurrentPosition(self, currentPosition):
     return self.flights[currentPosition]['destinations']
   
-
   def mask_actions(self):
     mask_actions = []
     valid_avtions = self.getPossibleFlightsFromCurrentPosition(self.state[0])
@@ -119,44 +153,29 @@ class SpyEnv_v2(Env):
 
     mask_actions = np.array(mask_actions)
     return mask_actions
-      
 
-  def moveOpponentAgent(self, agentNum):
-    agentAirportIndex = self.state[agentNum]
 
-    # actionType = np.random.choice([1, 2], 1, p = [0.9, 0.1])
-    
-    # if actionType == 1:
-    #   airPortIndex = self.getAgentNextAirPortByShortestPath(agentAirportIndex)
-    # else:
-    #   airPortIndex = self.getAgentNextAirportByRandom(agentAirportIndex)
+  def moveOpponentAgents(self):
 
-    airPortIndex = self.getAgentNextAirPortByShortestPath(agentAirportIndex, agentNum)
-  
+    if self.train_against_model:
+      #get actions from the Agents model
+      actions = self.agents_model.predict(self.state)
+    for i in range(2):
+      #for each agent check if actions is legal
+      if self.train_against_model:
+        action = actions[i] 
+      else:
+        action = self.getAgentNextAirPortByShortestPath(self.state[i+1])
+      #update agent to new position
+      self.state[i+1] = action
+
     
-    #set agent new state position
-    self.state[agentNum] = airPortIndex
-    
-  
-  def getAgentNextAirPortByShortestPath(self, agentAirportIndex, agentNum):
+  def getAgentNextAirPortByShortestPath(self, agentAirportIndex):
     #calculate shortest path between agent to spy
-    spyAirportIndex = self.state[0]
-    path = self.shortest_path(agentAirportIndex, spyAirportIndex)
-    if(len(path) == 0):
-      if(len(self.agents_path[agentNum]) == 0):
-        return self.getAgentNextAirportByRandom(agentAirportIndex)
-      return self.agents_path[agentNum][0]
-    self.agents_path[agentNum] = path[2:]
+    path = self.shortest_path(agentAirportIndex, self.state[0])
     return path[1]
 
-  #get random action based on current position
-  def getAgentNextAirportByRandom(self, agentAirportIndex):
-    return np.random.choice(self.flights[agentAirportIndex]['destinations']) 
-
-
-
   def shortest_path(self, node1, node2):
-    rnd = False
     path_list = [[node1]]
     path_index = 0
     # To keep track of previously visited nodes
@@ -185,16 +204,11 @@ class SpyEnv_v2(Env):
         path_index += 1
     # No path is found
     return []
-
+  
   def render(self):
     return
   
   def reset(self):
-    f = open('reward_learning3.txt', 'a')
-    f.write(f"{self.game_reward},") 
-    f.close()
-    self.game_reward = 0 
-    
     self.state = list(self.initial_state.values())
     self.episode_steps = 0
     return self.state
@@ -207,5 +221,3 @@ class SpyEnv_v2(Env):
     self.lose = 0
     self.ilegal_step = 0
     self.tie = 0
-    
-
