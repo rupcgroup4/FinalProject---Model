@@ -10,7 +10,7 @@ import os
 
 class Model():
 
-  def __init__(self, env, name, isNew=False):
+  def __init__(self, env, name, isNew=False, stop_threshold=0.97):
     self.log_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'Logs', 'PPO', name)
     if name == 'SpyEnv' or name == 'AgentsEnv':
       self.save_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'SavedModels', 'PPO',name)
@@ -18,6 +18,7 @@ class Model():
       self.save_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'SavedModels', 'PPO')
 
     self.env = env
+    self.stop_threshold = stop_threshold
 
     #if isNew == True create new model otherwise load existing model
     if isNew:
@@ -42,7 +43,7 @@ class Model():
     
   def eval_call_back(self):
      #Specify on after which average reward to stop the training
-    stop_callback = StopTrainingOnRewardThreshold(reward_threshold=1.1, verbose=1)
+    stop_callback = StopTrainingOnRewardThreshold(reward_threshold=self.stop_threshold, verbose=1)
     # # Stop training if there is no improvement after more than 4 evaluations
     # stop_train_callback = StopTrainingOnNoModelImprovement(max_no_improvement_evals=6, min_evals=8, verbose=1)
     #Callback that going to get triggered after each training round

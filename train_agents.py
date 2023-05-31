@@ -68,18 +68,6 @@ print(agents_model.test_model(1000))
 #     else:
 #       agents_model = Model.Model(agents_env, name='AgnetsEnv_v0', isNew=True)
     
-<<<<<<< Updated upstream
-    distance = agents_env.shortest_path(state['spyPosition'], state['targetPosition'])
-    distance = len(distance) - 1
-    if(distance > 2):
-      agents_model.learn(10000 * distance)
-      agents_env.reset_stats()
-      res = agents_model.test_model(20)
-      if res:
-        f = open('learning_process-Agents.txt', 'a')
-        f.write(f"{counter+1}, {res['state']['targetPosition']}, {res['win']}, {res['lose']}, {res['ilegal']}, {res['tie']}\n") 
-        f.close()
-=======
 #     distance = agents_env.shortest_path(state['spyPosition'], state['targetPosition'])
 #     distance = len(distance) - 1
 #     if distance > 1:
@@ -90,7 +78,6 @@ print(agents_model.test_model(1000))
 #         f = open('learning_process-Agents.txt', 'a')
 #         f.write(f"{counter+1}, {res['state']['targetPosition']}, {res['win']}, {res['lose']}, {res['tie']}, {res['ilegal']}\n") 
 #         f.close()
->>>>>>> Stashed changes
    
 #   counter+=1
 

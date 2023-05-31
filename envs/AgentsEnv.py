@@ -7,9 +7,9 @@ from stable_baselines3 import PPO
 
 
 
-class AgentsEnv_v1(Env):
+class AgentsEnv(Env):
 
-  def __init__(self, state, flights, train=False, train_against_model=False):
+  def __init__(self, state, flights, train_against_model=False):
 
     self.flights = flights
     self.initial_state = state.copy()
@@ -31,9 +31,9 @@ class AgentsEnv_v1(Env):
     self.tie = 0
     self.episode_steps = 0
 
-    if train and train_against_model:
-      from envs.SpyEnv import SpyEnv_v3
-      spy_env = SpyEnv_v3(state, flights)
+    if train_against_model:
+      from envs.SpyEnv import SpyEnv
+      spy_env = SpyEnv(state, flights)
       self.spyModel = Model.Model(spy_env, name='SpyEnv', isNew=False)
     
     self.train_against_model = train_against_model
@@ -63,7 +63,7 @@ class AgentsEnv_v1(Env):
     #Check if spy lose
     if self.isSpyAndAgentInSamePosition(): 
       self.win +=1
-      reward = -1
+      reward = 1
       done = True
     # Check if Spy wins
     elif self.state[0] == self.state[3] and not self.isSpyAndAgentInSamePosition(): 

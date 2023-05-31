@@ -10,9 +10,9 @@ AGENT2_POSITION = 22
 TARGET_POSITION = 14
 
 
-class SpyEnv_v3(Env):
+class SpyEnv(Env):
 
-  def __init__(self, state, flights, train_against_model=False):
+  def __init__(self, state, flights, train_against_model=False, train_against_new_model=False):
     
     self.flights = flights
     self.initial_state = state.copy()
@@ -42,9 +42,9 @@ class SpyEnv_v3(Env):
     self.episode_steps = 0
 
     if train_against_model:
-      from envs.AgentsEnv import AgentsEnv_v1
-      agents_env = AgentsEnv_v1(state, flights)
-      self.agents_model = Model.Model(agents_env, name='AgnetsEnv', isNew=False)
+      from envs.AgentsEnv import AgentsEnv
+      agents_env = AgentsEnv(state, flights)
+      self.agents_model = Model.Model(agents_env, name='AgentsEnv', isNew=train_against_new_model)
       
 
     self.train_against_model = train_against_model
@@ -117,10 +117,10 @@ class SpyEnv_v3(Env):
     elif self.state[0] == self.state[3]: 
       self.win +=1
 
-      shortest_path = len(self.shortest_path(self.initial_state['spyPosition'], self.initial_state['targetPosition'])) - 1
-      steps_played_over_shorthest_path = self.episode_steps - shortest_path
-      reward = 1 - (steps_played_over_shorthest_path / 30)
-      # reward = 1
+      # shortest_path = len(self.shortest_path(self.initial_state['spyPosition'], self.initial_state['targetPosition'])) - 1
+      # steps_played_over_shorthest_path = self.episode_steps - shortest_path
+      # reward = 1 - (steps_played_over_shorthest_path / 30)
+      reward = 1
       done = True
     else:
       # move agents
