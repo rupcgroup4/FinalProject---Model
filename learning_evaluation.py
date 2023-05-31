@@ -1,7 +1,7 @@
 import numpy as np
 import plotly.graph_objects as go
 
-eval = np.load('./envs/model/Logs/PPO/SpyEnv/evaluations.npz')
+eval = np.load('./envs/model/Logs/PPO/AgentsEnv/evaluations.npz')
 
 print(eval['results'])
 print(eval['timesteps'])

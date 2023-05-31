@@ -4,8 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from observation import Observation
 from envs.model import Model
-from envs.AgentsEnv  import AgentsEnv_v1
-from envs.SpyEnv import SpyEnv_v3
+from envs.AgentsEnv  import AgentsEnv
+from envs.SpyEnv import SpyEnv
 
 
 from envs.flights import flights
@@ -17,7 +17,15 @@ class gameState(BaseModel):
   target_position: str
   isNew: bool
 
+
+class LastActions:
+  spy_last_action = None
+  agents_last_actions = []
+
+
 app = FastAPI()
+
+
 
 origins = ["*"]
 
@@ -29,15 +37,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+
+
+
 @app.post('/agents')
 async def whereToFlyAgents(item: gameState):
   print(item)
   obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
-  env = AgentsEnv_v1(obs.state, flights)
+  env = AgentsEnv(obs.state, flights)
+  if len(LastActions.agents_last_actions) > 0:
+    env.last_actions = LastActions.agents_last_actions
   model = Model.Model(env, name='AgentsEnv', isNew=not item.isNew)
 
   print(obs.state)
   res = model.predict(env.state)
+  LastActions.agents_last_actions = res
   res1 = obs.get_air_port_id_by_index(res[0])
   res2 = obs.get_air_port_id_by_index(res[1])
   return {'result':[res1, res2]}
@@ -49,12 +64,13 @@ async def whereToFlyAgents(item: gameState):
 async def whereToFlySPY(item: gameState):
   print(item)
   obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
-  env = SpyEnv_v3(obs.state, flights)
-
-  model = Model.Model(env, name='spy_300k_vs_agents_50k', isNew=not item.isNew)
+  env = SpyEnv(obs.state, flights)
+  env.last_action = LastActions.spy_last_action
+  model = Model.Model(env, name='SpyEnv', isNew=not item.isNew)
   print(obs.state)
   res = model.predict(env.state)
   res = res.item()
+  LastActions.spy_last_action = res
 
   res = obs.get_air_port_id_by_index(res)
   print(res)

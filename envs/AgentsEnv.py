@@ -30,6 +30,7 @@ class AgentsEnv_v1(Env):
     self.ilegal_step = 0
     self.tie = 0
     self.episode_steps = 0
+    self.last_actions = [self.state[1], self.state[2]]
 
     if train and train_against_model:
       from envs.SpyEnv import SpyEnv_v3
@@ -46,6 +47,7 @@ class AgentsEnv_v1(Env):
     done = False
     info = {}
 
+    self.last_actions = actions
 
     if(self.episode_steps > 30):
       self.tie +=1
@@ -100,8 +102,8 @@ class AgentsEnv_v1(Env):
     for i in range(2):
       agent_mask = []
       valid_actions = self.getPossibleFlightsFromCurrentPosition(self.state[i+1])
-      for i in range(len(self.flights)):
-        if i in valid_actions:
+      for j in range(len(self.flights)):
+        if j in valid_actions and j != self.last_actions[i]:
           agent_mask.append(True)
           continue
         agent_mask.append(False)
@@ -171,6 +173,7 @@ class AgentsEnv_v1(Env):
     self.moveOpponentSpy()
 
     self.episode_steps = 0
+    self.last_actions = [self.state[1], self.state[2]]
     return self.state
 
   def stats(self):

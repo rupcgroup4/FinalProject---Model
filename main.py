@@ -1,12 +1,12 @@
 from envs.model import Model
-from envs.SpyEnv import SpyEnv_v3
+from envs.SpyEnv import SpyEnv
 from envs.flights import flights
 import itertools
 import collections
 from sb3_contrib.common.wrappers import ActionMasker
 import numpy as np
 from stable_baselines3.common.vec_env import DummyVecEnv
-from envs.AgentsEnv import AgentsEnv_v1
+from envs.AgentsEnv import AgentsEnv
 
 
 
@@ -21,11 +21,11 @@ def mask_fn(env):
   return env.mask_actions()
 
 
-# spy_env = SpyEnv_v3(state, flights, train_against_model=True)
+# spy_env = SpyEnv(state, flights, train_against_model=True, train_against_new_model=True)
 # spy_env = ActionMasker(spy_env, mask_fn)
-# spy_model = Model.Model(spy_env, name='SpyEnv', isNew=False)
-# spy_model.learn(250000)
-agents_env = AgentsEnv_v1(state, flights, train=True, train_against_model=True)
+# spy_model = Model.Model(spy_env, name='SpyEnv', isNew=True, stop_threshold=1)
+# spy_model.learn(50000)
+agents_env = AgentsEnv(state, flights, train_against_model=True)
 agents_env = ActionMasker(agents_env, mask_fn)
 agents_model = Model.Model(agents_env, name='AgentsEnv', isNew=False)
 agents_model.learn(250000)
@@ -48,9 +48,35 @@ agents_model.learn(250000)
 #   counter +=1
 
 # spy_env.reset_stats()
-# print(spy_model.test_model(1000))
+# print(spy_model.test_model(50))
 agents_env.reset_stats()
-print(agents_model.test_model(1000))
+print(agents_model.test_model(50))
+
+# counter = 0
+# while counter < 1:
+
+#   print('Spy')
+#   spy_env = SpyEnv(state, flights, train_against_model=True)
+#   spy_env = ActionMasker(spy_env, mask_fn)
+#   spy_model = Model.Model(spy_env, name='SpyEnv', isNew=False, stop_threshold=1)
+#   spy_model.learn(50000)
+#   print('agents')
+#   agents_env = AgentsEnv(state, flights, train_against_model=True)
+#   agents_env = ActionMasker(agents_env, mask_fn)
+#   agents_model = Model.Model(agents_env, name='AgentsEnv', isNew=False, stop_threshold=1)
+#   agents_model.learn(50000)
+
+#   spy_env.reset_stats()
+#   print(spy_model.test_model(50))
+#   agents_env.reset_stats()
+#   print(agents_model.test_model(50))
+
+#   counter +=1
+
+# spy_env.reset_stats()
+# print(spy_model.test_model(1000))
+# agents_env.reset_stats()
+# print(agents_model.test_model(1000))
 
 # order_for_train = []
 # # BFS algorithm

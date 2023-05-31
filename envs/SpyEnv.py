@@ -41,6 +41,8 @@ class SpyEnv_v3(Env):
     self.tie = 0
     self.episode_steps = 0
 
+    self.last_action = None
+
     if train_against_model:
       from envs.AgentsEnv import AgentsEnv_v1
       agents_env = AgentsEnv_v1(state, flights)
@@ -91,6 +93,8 @@ class SpyEnv_v3(Env):
     reward = 0
     done = False
     info = {}
+
+    self.last_action = action
 
     if(self.episode_steps > 30):
       reward = -2
@@ -144,9 +148,9 @@ class SpyEnv_v3(Env):
   
   def mask_actions(self):
     mask_actions = []
-    valid_avtions = self.getPossibleFlightsFromCurrentPosition(self.state[0])
+    valid_actions = self.getPossibleFlightsFromCurrentPosition(self.state[0])
     for i in range(len(self.flights)):
-      if i in valid_avtions:
+      if i in valid_actions and i != self.last_action:
         mask_actions.append(True)
         continue
       mask_actions.append(False)
@@ -211,6 +215,7 @@ class SpyEnv_v3(Env):
   def reset(self):
     self.state = list(self.initial_state.values())
     self.episode_steps = 0
+    self.last_action = None
     return self.state
 
   def stats(self):
