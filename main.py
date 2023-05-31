@@ -21,34 +21,19 @@ def mask_fn(env):
   return env.mask_actions()
 
 
-# spy_env = SpyEnv(state, flights, train_against_model=True, train_against_new_model=True)
-# spy_env = ActionMasker(spy_env, mask_fn)
-# spy_model = Model.Model(spy_env, name='SpyEnv', isNew=True, stop_threshold=1)
-# spy_model.learn(50000)
+spy_env = SpyEnv(state, flights, train_against_model=True, train_against_new_model=True)
+spy_env = ActionMasker(spy_env, mask_fn)
+spy_model = Model.Model(spy_env, name='SpyEnv', isNew=True, stop_threshold=1)
+spy_model.learn(20000)
 agents_env = AgentsEnv(state, flights, train_against_model=True)
 agents_env = ActionMasker(agents_env, mask_fn)
-agents_model = Model.Model(agents_env, name='AgentsEnv', isNew=False)
-agents_model.learn(250000)
+agents_model = Model.Model(agents_env, name='AgentsEnv', isNew=False, stop_threshold=1)
+agents_model.learn(20000)
 
 
-# counter = 0
-# while counter < 1:
 
-#   print('Spy')
- 
-#   spy_env = ActionMasker(spy_env, mask_fn)
-#   spy_model = Model.Model(spy_env, name='SpyEnv_v3', isNew=False)
-#   spy_model.learn(20000)
-#   print('agents')
-#   agents_env = AgentsEnv_v1(state, flights, train=True, train_against_model=True)
-#   agents_env = ActionMasker(agents_env, mask_fn)
-#   agents_model = Model.Model(agents_env, name='AgnetsEnv_v1', isNew=False)
-#   agents_model.learn(20000)
-
-#   counter +=1
-
-# spy_env.reset_stats()
-# print(spy_model.test_model(50))
+spy_env.reset_stats()
+print(spy_model.test_model(50))
 agents_env.reset_stats()
 print(agents_model.test_model(50))
 

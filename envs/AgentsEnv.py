@@ -47,7 +47,7 @@ class AgentsEnv(Env):
     done = False
     info = {}
 
-    self.last_actions = actions
+    self.last_actions = [self.state[1], self.state[2]]
 
     if(self.episode_steps > 30):
       self.tie +=1

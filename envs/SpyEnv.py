@@ -94,7 +94,7 @@ class SpyEnv(Env):
     done = False
     info = {}
 
-    self.last_action = action
+    self.last_action = self.state[0]
 
     if(self.episode_steps > 30):
       reward = -2

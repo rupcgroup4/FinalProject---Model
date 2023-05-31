@@ -52,7 +52,7 @@ async def whereToFlyAgents(item: gameState):
 
   print(obs.state)
   res = model.predict(env.state)
-  LastActions.agents_last_actions = res
+  LastActions.agents_last_actions = [env.state[1], env.state[2]]
   res1 = obs.get_air_port_id_by_index(res[0])
   res2 = obs.get_air_port_id_by_index(res[1])
   return {'result':[res1, res2]}
@@ -70,7 +70,7 @@ async def whereToFlySPY(item: gameState):
   print(obs.state)
   res = model.predict(env.state)
   res = res.item()
-  LastActions.spy_last_action = res
+  LastActions.spy_last_action = env.state[0]
 
   res = obs.get_air_port_id_by_index(res)
   print(res)
