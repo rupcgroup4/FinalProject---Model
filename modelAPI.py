@@ -13,14 +13,14 @@ from envs.flights import flights
 class gameState(BaseModel):
   spy_position: str
   agent1_position: str
-  agent2_position: str
+  # agent2_position: str
   target_position: str
   isNew: bool
 
 
 class LastActions:
   spy_last_action = None
-  agents_last_actions = []
+  agents_last_actions = None
 
 
 app = FastAPI()
@@ -44,18 +44,23 @@ app.add_middleware(
 @app.post('/agents')
 async def whereToFlyAgents(item: gameState):
   print(item)
-  obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
+  obs = Observation(item.spy_position, item.agent1_position, item.target_position)
   env = AgentsEnv(obs.state, flights)
-  if len(LastActions.agents_last_actions) > 0:
-    env.last_actions = LastActions.agents_last_actions
+
+  env.last_action = LastActions.agents_last_actions
+  # if len(LastActions.agents_last_actions) > 0:
+  #   env.last_actions = LastActions.agents_last_actions
   model = Model.Model(env, name='AgentsEnv', isNew=not item.isNew)
 
   print(obs.state)
   res = model.predict(env.state)
-  LastActions.agents_last_actions = [env.state[1], env.state[2]]
-  res1 = obs.get_air_port_id_by_index(res[0])
-  res2 = obs.get_air_port_id_by_index(res[1])
-  return {'result':[res1, res2]}
+  res = res.item()
+  LastActions.agents_last_actions = env.state[1]
+  # LastActions.agents_last_actions = [env.state[1], env.state[2]]
+
+  res = obs.get_air_port_id_by_index(res)
+  # res2 = obs.get_air_port_id_by_index(res[1])
+  return {'result':res}
 
   # return {'result':1}
 
@@ -63,7 +68,7 @@ async def whereToFlyAgents(item: gameState):
 @app.post('/spy')
 async def whereToFlySPY(item: gameState):
   print(item)
-  obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
+  obs = Observation(item.spy_position, item.agent1_position, item.target_position)
   env = SpyEnv(obs.state, flights)
   env.last_action = LastActions.spy_last_action
   model = Model.Model(env, name='SpyEnv', isNew=not item.isNew)

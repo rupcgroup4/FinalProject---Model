@@ -5,8 +5,7 @@ from envs.model import Model
 
 
 SPY_POSITION = 32
-AGENT1_POSITION = 13
-AGENT2_POSITION = 22
+AGENT_POSITION = 13
 TARGET_POSITION = 14
 
 
@@ -19,7 +18,6 @@ class SpyEnv(Env):
     self.state = list(self.initial_state.values())
     
     self.observation_space = MultiDiscrete([
-      len(flights),
       len(flights),
       len(flights),
       len(flights),
@@ -51,9 +49,9 @@ class SpyEnv(Env):
 
     self.train_against_model = train_against_model
 
-    self.sp_ST = len(self.shortest_path(self.initial_state['spyPosition'], self.state[3]))-1
-    self.sp_SA1 = len(self.shortest_path(self.initial_state['spyPosition'], self.state[1]))-1
-    self.sp_SA2 = len(self.shortest_path(self.initial_state['spyPosition'], self.state[2]))-1
+    # self.sp_ST = len(self.shortest_path(self.initial_state['spyPosition'], self.state[3]))-1
+    # self.sp_SA1 = len(self.shortest_path(self.initial_state['spyPosition'], self.state[1]))-1
+    # self.sp_SA2 = len(self.shortest_path(self.initial_state['spyPosition'], self.state[2]))-1
     
 
   def historicFunction(self):
@@ -118,7 +116,7 @@ class SpyEnv(Env):
       self.lose +=1
       reward = -1
       done = True
-    elif self.state[0] == self.state[3]: 
+    elif self.state[0] == self.state[2]: 
       self.win +=1
 
       # shortest_path = len(self.shortest_path(self.initial_state['spyPosition'], self.initial_state['targetPosition'])) - 1
@@ -139,7 +137,7 @@ class SpyEnv(Env):
     return self.state, reward, done, info
   
   def isSpyAndAgentInSamePosition(self):
-    return self.state[0] == self.state[1] or self.state[0] == self.state[2]
+    return self.state[0] == self.state[1]
 
 
   #currentPoistion is index in flights array
@@ -163,15 +161,11 @@ class SpyEnv(Env):
 
     if self.train_against_model:
       #get actions from the Agents model
-      actions = self.agents_model.predict(self.state)
-    for i in range(2):
-      #for each agent check if actions is legal
-      if self.train_against_model:
-        action = actions[i] 
-      else:
-        action = self.getAgentNextAirPortByShortestPath(self.state[i+1])
+      action = self.agents_model.predict(self.state)
+    else: 
+      action = self.getAgentNextAirPortByShortestPath(self.state[1])
       #update agent to new position
-      self.state[i+1] = action
+    self.state[1] = action
 
     
   def getAgentNextAirPortByShortestPath(self, agentAirportIndex):

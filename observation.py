@@ -6,26 +6,26 @@ from envs.flights import flights
 
 
 class Observation():
-  def __init__(self, spy_position, agent1_position, agent2_position, target_position):
-    self.state = self.create_state(spy_position, agent1_position, agent2_position, target_position)
+  def __init__(self, spy_position, agent1_position, target_position):
+    self.state = self.create_state(spy_position, agent1_position, target_position)
    
-  def create_state(self, spy_position, agent1_position, agent2_position, target_position):
+  def create_state(self, spy_position, agent1_position, target_position):
 
     for i in range(len(flights)):
       if flights[i]['id'] == spy_position:
         spy_position = i
       if flights[i]['id'] == agent1_position:
         agent1_position = i
-      if flights[i]['id'] == agent2_position:
-        agent2_position = i
+      # if flights[i]['id'] == agent2_position:
+      #   agent2_position = i
       if flights[i]['id'] == target_position:
         target_position = i
         
 
     state = dict({
       'spyPosition': spy_position, 
-      'agent1Position': agent1_position, 
-      'agent2Position': agent2_position,
+      'agentPosition': agent1_position, 
+      # 'agent2Position': agent2_position,
       'targetPosition': target_position
       })
 
