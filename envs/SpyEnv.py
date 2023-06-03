@@ -54,32 +54,17 @@ class SpyEnv(Env):
     # self.sp_SA2 = len(self.shortest_path(self.initial_state['spyPosition'], self.state[2]))-1
     
 
-  def historicFunction(self):
+  def historicFunction(self,action):
     reward = 0
 
-    sp_ST = len(self.shortest_path(self.state[0], self.state[3]))-1
-    sp_SA1 = len(self.shortest_path(self.state[0], self.state[1]))-1
-    sp_SA2 = len(self.shortest_path(self.state[0], self.state[2]))-1
+    sp_ST = len(self.shortest_path(self.state[0], self.state[2]))-1
+    sp_AS = len(self.shortest_path(self.state[1], action))-1
+  
 
-    if sp_ST < self.sp_ST: 
-      reward += 0.1
-
-    if sp_ST > self.sp_ST: 
+    if sp_ST == 1 and action != self.state[2] and self.state[1] != self.state[2]: 
       reward -= 0.1
 
-    if sp_ST == 1: 
-      reward += 0.2
-    
-    if sp_SA1 < self.sp_SA1 and sp_SA2 < self.sp_SA2: 
-      reward += 0.2
-    
-    if sp_SA1 < self.sp_SA1 or sp_SA2 < self.sp_SA2: 
-      reward += 0.1
-
-    if sp_SA1 == 1: 
-      reward -= 0.1
-    
-    if sp_SA2 == 1: 
+    if sp_AS == 1: 
       reward -= 0.1
 
     return reward
@@ -105,11 +90,11 @@ class SpyEnv(Env):
       reward = -3
       return self.state, reward, True, info
 
+    if reward == 0:
+      reward = self.historicFunction(action)
+
     #Move spy
     self.state[0] = action
-
-    # if reward == 0:
-    #   reward = self.historicFunction()
 
     #Calculate reward
     if self.isSpyAndAgentInSamePosition(): 
@@ -162,6 +147,7 @@ class SpyEnv(Env):
     if self.train_against_model:
       #get actions from the Agents model
       action = self.agents_model.predict(self.state)
+      action = action.item()
     else: 
       action = self.getAgentNextAirPortByShortestPath(self.state[1])
       #update agent to new position

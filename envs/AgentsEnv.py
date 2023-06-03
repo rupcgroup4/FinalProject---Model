@@ -40,6 +40,16 @@ class AgentsEnv(Env):
     self.train_against_model = train_against_model
 
 
+  def historicFunction(self,action):
+    reward = 0
+
+    sp_AS = len(self.shortest_path(self.state[1], action))-1
+  
+    if sp_AS == 1 and action != self.state[0]: 
+      reward -= 0.1
+
+    return reward
+
   #action = represent index of airpor in array
   def step(self, action):
     self.episode_steps+=1
@@ -70,6 +80,8 @@ class AgentsEnv(Env):
         reward = -1
         done = True    
     else:
+      if reward == 0:
+         reward = self.historicFunction(action)
       # Move agent
       self.state[1] = action
 
@@ -97,7 +109,7 @@ class AgentsEnv(Env):
     mask_actions = []
     valid_actions = self.getPossibleFlightsFromCurrentPosition(self.state[1])
     for i in range(len(self.flights)):
-      if i in valid_actions and i != self.last_action:
+      if i in valid_actions : #and i != self.last_action
         mask_actions.append(True)
         continue
       mask_actions.append(False)
