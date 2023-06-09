@@ -88,6 +88,8 @@ class Model():
         while not done:
             #Using Model predict nad not a random action
             action = self.predict(obs)
+            if action.size < 2:
+              action = action.item()
             obs, reward, done, info = self.env.step(action) #Take step based on model prediction
             score += reward
             steps +=1

@@ -40,10 +40,30 @@ class AgentsEnv(Env):
     self.train_against_model = train_against_model
 
 
+  def heuristicFunction(self, actions):
+      reward = 0
+
+      spy_to_agent1 = len(self.shortest_path(self.state[0], self.state[1]))-1
+      spy_to_agent2 = len(self.shortest_path(self.state[0], self.state[2]))-1
+
+      if spy_to_agent1 == 1 and actions[0] != self.state[0]:
+        reward -= 0.1
+
+      if spy_to_agent2 == 1 and actions[1] != self.state[0]:
+        reward -= 0.1
+
+      if actions[0] == actions[1]:
+        reward -= 0.1
+
+      return reward
+
+
+
   #action = represent index of airpor in array
   def step(self, actions):
     self.episode_steps+=1
     reward = 0
+    reward = self.heuristicFunction(actions)
     done = False
     info = {}
 

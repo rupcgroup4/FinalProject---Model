@@ -50,47 +50,30 @@ class SpyEnv(Env):
       
 
     self.train_against_model = train_against_model
+  
 
-    self.sp_ST = len(self.shortest_path(self.initial_state['spyPosition'], self.state[3]))-1
-    self.sp_SA1 = len(self.shortest_path(self.initial_state['spyPosition'], self.state[1]))-1
-    self.sp_SA2 = len(self.shortest_path(self.initial_state['spyPosition'], self.state[2]))-1
+  def heuristicFunction(self, action):
+      reward = 0
+
+      spy_to_target = len(self.shortest_path(self.state[0], self.state[2]))-1
+      spy_to_agent1 = len(self.shortest_path(self.state[1], action))-1
+      spy_to_agent2 = len(self.shortest_path(self.state[2], action))-1
     
 
-  def historicFunction(self):
-    reward = 0
+      if spy_to_target == 1 and action != self.state[3] and self.state[1] != self.state[3] and self.state[2] != self.state[3]: 
+        reward -= 0.1
 
-    sp_ST = len(self.shortest_path(self.state[0], self.state[3]))-1
-    sp_SA1 = len(self.shortest_path(self.state[0], self.state[1]))-1
-    sp_SA2 = len(self.shortest_path(self.state[0], self.state[2]))-1
+      if spy_to_agent1 == 1 or spy_to_agent2 ==1: 
+        reward -= 0.1
 
-    if sp_ST < self.sp_ST: 
-      reward += 0.1
-
-    if sp_ST > self.sp_ST: 
-      reward -= 0.1
-
-    if sp_ST == 1: 
-      reward += 0.2
-    
-    if sp_SA1 < self.sp_SA1 and sp_SA2 < self.sp_SA2: 
-      reward += 0.2
-    
-    if sp_SA1 < self.sp_SA1 or sp_SA2 < self.sp_SA2: 
-      reward += 0.1
-
-    if sp_SA1 == 1: 
-      reward -= 0.1
-    
-    if sp_SA2 == 1: 
-      reward -= 0.1
-
-    return reward
+      return reward
 
 
   #action = represent index of airpor in array
   def step(self, action):
     self.episode_steps+=1
     reward = 0
+    reward = self.heuristicFunction(action)
     done = False
     info = {}
 
@@ -107,11 +90,9 @@ class SpyEnv(Env):
       reward = -3
       return self.state, reward, True, info
 
+
     #Move spy
     self.state[0] = action
-
-    # if reward == 0:
-    #   reward = self.historicFunction()
 
     #Calculate reward
     if self.isSpyAndAgentInSamePosition(): 
