@@ -131,7 +131,7 @@ class SpyEnv(Env):
     mask_actions = []
     valid_actions = self.getPossibleFlightsFromCurrentPosition(self.state[0])
     for i in range(len(self.flights)):
-      if i in valid_actions and i != self.last_action:
+      if i in valid_actions: # and i != self.last_action
         mask_actions.append(True)
         continue
       mask_actions.append(False)

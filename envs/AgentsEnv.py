@@ -123,7 +123,7 @@ class AgentsEnv(Env):
       agent_mask = []
       valid_actions = self.getPossibleFlightsFromCurrentPosition(self.state[i+1])
       for j in range(len(self.flights)):
-        if j in valid_actions and j != self.last_actions[i]:
+        if j in valid_actions: # and j != self.last_actions[i]
           agent_mask.append(True)
           continue
         agent_mask.append(False)

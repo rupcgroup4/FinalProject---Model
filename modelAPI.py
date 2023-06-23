@@ -39,8 +39,6 @@ app.add_middleware(
 
 
 
-
-
 @app.post('/agents')
 async def whereToFlyAgents(item: gameState):
   print(item)
