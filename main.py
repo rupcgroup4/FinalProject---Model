@@ -17,14 +17,42 @@ from envs.AgentsEnv import AgentsEnv
 #   "targetPosition": 9
 # }
 
-state = {
+
+# state = {
+#   "spyPosition": 9, 
+#   "agent1Position": 6, 
+#   "agent2Position": 14,
+#   "targetPosition": 0
+# }
+
+# state = {
+#   "spyPosition": 12, 
+#   "agent1Position": 6, 
+#   "agent2Position": 4,
+#   "targetPosition": 2
+# }
+
+states = [
+  {
+  "spyPosition": 0, 
+  "agent1Position": 6, 
+  "agent2Position": 14,
+  "targetPosition": 9
+},
+{
+  "spyPosition": 9, 
+  "agent1Position": 6, 
+  "agent2Position": 14,
+  "targetPosition": 0
+},
+{
   "spyPosition": 12, 
   "agent1Position": 6, 
   "agent2Position": 4,
   "targetPosition": 2
 }
 
-
+]
 
 def mask_fn(env):
   return env.mask_actions()
@@ -47,30 +75,36 @@ def mask_fn(env):
 # print(agents_model.test_model(50))
 
 counter = 0
-while counter < 1:
+state_index = 0
 
-  print('Spy')
-  spy_env = SpyEnv(state, flights, train_against_model=True)
+while counter < 3:
+
+  print(f'Current state {states[state_index]}\n\n\n\n')
+
+  print('Spy train\n\n')
+  spy_env = SpyEnv(states[state_index], flights, train_against_model=True)
   spy_env = ActionMasker(spy_env, mask_fn)
   spy_model = Model.Model(spy_env, name='SpyEnv', isNew=False, stop_threshold=1)
-  spy_model.learn(100000)
-  print('agents')
-  agents_env = AgentsEnv(state, flights, train_against_model=True)
-  agents_env = ActionMasker(agents_env, mask_fn)
-  agents_model = Model.Model(agents_env, name='AgentsEnv', isNew=False, stop_threshold=1)
-  agents_model.learn(50000)
-
+  # spy_model.learn(100000)
   spy_env.reset_stats()
-  print(spy_model.test_model(50))
+  print(spy_model.test_model(1000))
+
+  print('agents\n\n')
+  agents_env = AgentsEnv(states[state_index], flights, train_against_model=True)
+  agents_env = ActionMasker(agents_env, mask_fn)
+  agents_model = Model.Model(agents_env, name='AgentsEnv', isNew=False, stop_threshold=0.8)
+  # agents_model.learn(50000)
   agents_env.reset_stats()
-  print(agents_model.test_model(50))
+  print(f'\n\n{agents_model.test_model(1000)}')
 
   counter +=1
+  state_index +=1
 
-spy_env.reset_stats()
-print(spy_model.test_model(1000))
-agents_env.reset_stats()
-print(agents_model.test_model(1000))
+  if state_index >= len(states):
+    state_index = 0
+
+
+
 
 # order_for_train = []
 # # BFS algorithm

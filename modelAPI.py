@@ -10,25 +10,25 @@ from envs.SpyEnv import SpyEnv
 
 from envs.flights import flights
 
+#Utilities
 class gameState(BaseModel):
   spy_position: str
   agent1_position: str
   agent2_position: str
   target_position: str
   isNew: bool
-
+  model: str
 
 class LastActions:
   spy_last_action = None
   agents_last_actions = []
 
 
+#Create FastAPI app
 app = FastAPI()
 
-
-
+#Allow CORS
 origins = ["*"]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -38,42 +38,35 @@ app.add_middleware(
 )
 
 
-
+#Agents route
 @app.post('/agents')
 async def whereToFlyAgents(item: gameState):
-  print(item)
   obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
   env = AgentsEnv(obs.state, flights)
   if len(LastActions.agents_last_actions) > 0:
     env.last_actions = LastActions.agents_last_actions
-  model = Model.Model(env, name='AgentsEnv', isNew=not item.isNew)
+  model = Model.Model(env, name=item.model, isNew=not item.isNew)
 
-  print(obs.state)
   res = model.predict(env.state)
   LastActions.agents_last_actions = [env.state[1], env.state[2]]
   res1 = obs.get_air_port_id_by_index(res[0])
   res2 = obs.get_air_port_id_by_index(res[1])
   return {'result':[res1, res2]}
 
-  # return {'result':1}
 
-
+#Spy route
 @app.post('/spy')
 async def whereToFlySPY(item: gameState):
-  print(item)
   obs = Observation(item.spy_position, item.agent1_position, item.agent2_position, item.target_position)
   env = SpyEnv(obs.state, flights)
   env.last_action = LastActions.spy_last_action
-  model = Model.Model(env, name='SpyEnv', isNew=not item.isNew)
-  print(obs.state)
+  model = Model.Model(env, name=item.model, isNew=not item.isNew)
   res = model.predict(env.state)
   res = res.item()
   LastActions.spy_last_action = env.state[0]
 
   res = obs.get_air_port_id_by_index(res)
-  print(res)
   return {'result':res}
-  # return {'result':1}
 
 
 

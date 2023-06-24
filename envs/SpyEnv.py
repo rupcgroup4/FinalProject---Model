@@ -63,8 +63,11 @@ class SpyEnv(Env):
       if spy_to_target == 1 and action != self.state[3] and self.state[1] != self.state[3] and self.state[2] != self.state[3]: 
         reward -= 0.1
 
-      if spy_to_agent1 == 1 or spy_to_agent2 ==1: 
+      if spy_to_agent1 == 1: 
         reward -= 0.1
+      
+      if spy_to_agent2 ==1:
+        reward -= 0.1 
 
       return reward
 
