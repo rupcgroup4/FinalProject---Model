@@ -32,24 +32,33 @@ from envs.AgentsEnv import AgentsEnv
 #   "targetPosition": 2
 # }
 
+# states = [
+#   {
+#   "spyPosition": 0, 
+#   "agent1Position": 6, 
+#   "agent2Position": 14,
+#   "targetPosition": 9
+# },
+# {
+#   "spyPosition": 9, 
+#   "agent1Position": 6, 
+#   "agent2Position": 14,
+#   "targetPosition": 0
+# },
+# {
+#   "spyPosition": 12, 
+#   "agent1Position": 6, 
+#   "agent2Position": 4,
+#   "targetPosition": 2
+# }
+
+# ]
 states = [
   {
-  "spyPosition": 0, 
-  "agent1Position": 6, 
-  "agent2Position": 14,
-  "targetPosition": 9
-},
-{
-  "spyPosition": 9, 
-  "agent1Position": 6, 
-  "agent2Position": 14,
-  "targetPosition": 0
-},
-{
-  "spyPosition": 12, 
+  "spyPosition": 2, 
   "agent1Position": 6, 
   "agent2Position": 4,
-  "targetPosition": 2
+  "targetPosition": 12
 }
 
 ]
@@ -77,8 +86,9 @@ def mask_fn(env):
 counter = 0
 state_index = 0
 
-while counter < 3:
+while counter < 1:
 
+  print(f'Loop number: {state_index}\n\n')
   print(f'Current state {states[state_index]}\n\n\n\n')
 
   print('Spy train\n\n')
