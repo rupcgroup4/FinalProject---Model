@@ -2,8 +2,8 @@ import plotly.graph_objects as go
 
 x1=['Win Spy']
 x2 = ['Win Agents']
-y1=[955]
-y2 =[45]
+y1=[334]
+y2 =[666]
 
 
 fig = go.Figure()

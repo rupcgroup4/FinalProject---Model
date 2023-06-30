@@ -5,7 +5,6 @@ import itertools
 import collections
 from sb3_contrib.common.wrappers import ActionMasker
 import numpy as np
-from stable_baselines3.common.vec_env import DummyVecEnv
 from envs.AgentsEnv import AgentsEnv
 
 
