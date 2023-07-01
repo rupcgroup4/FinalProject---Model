@@ -13,7 +13,7 @@ flights = [
   {"id":"CPO","destinations":[12,13,8]},
   {"id":"EZE","destinations":[11,13,10,17]},
   {"id":"CUE","destinations":[11,12,14,7]},
-  {"id":"CAY","destinations":[13,10,6]},
+  {"id":"CAY","destinations":[13,10,6,15]},
   {"id":"ELU","destinations":[18,16,14,3]},
   {"id":"ELL","destinations":[10,15,17,19]},
   {"id":"TNR","destinations":[16,19,12]},

@@ -53,9 +53,9 @@ class Model():
                                 # #call the callback on after each avaluation
                                 # callback_after_eval = stop_train_callback,
                                 #call the callback each 5000 rounds
-                                eval_freq=5000,
+                                eval_freq=1000,
                                 #evluation episodes
-                                n_eval_episodes = 1000,
+                                n_eval_episodes = 200,
                                 #save the best model as file
                                 best_model_save_path=self.save_path,
                                 verbose=1,
